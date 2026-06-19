@@ -1,0 +1,116 @@
+version: 2
+updates:
+  # npm dependencies for backend
+  - package-ecosystem: npm
+    directory: /backend
+    schedule:
+      interval: weekly
+      day: monday
+      time: "09:00"
+    open-pull-requests-limit: 5
+    reviewers:
+      - AbdolHamidDev
+    assignees:
+      - AbdolHamidDev
+    labels:
+      - dependencies
+      - backend
+    commit-message:
+      prefix: "chore(backend)"
+      prefix-development: "chore(backend)"
+      include: scope
+
+  # npm dependencies for frontend
+  - package-ecosystem: npm
+    directory: /frontend
+    schedule:
+      interval: weekly
+      day: monday
+      time: "09:00"
+    open-pull-requests-limit: 5
+    reviewers:
+      - AbdolHamidDev
+    assignees:
+      - AbdolHamidDev
+    labels:
+      - dependencies
+      - frontend
+    commit-message:
+      prefix: "chore(frontend)"
+      prefix-development: "chore(frontend)"
+      include: scope
+
+  # Python dependencies for pyBackend
+  - package-ecosystem: pip
+    directory: /pyBackend
+    schedule:
+      interval: weekly
+      day: monday
+      time: "09:00"
+    open-pull-requests-limit: 5
+    reviewers:
+      - AbdolHamidDev
+    assignees:
+      - AbdolHamidDev
+    labels:
+      - dependencies
+      - python
+    commit-message:
+      prefix: "chore(python)"
+      include: scope
+
+  # GitHub Actions
+  - package-ecosystem: github-actions
+    directory: /
+    schedule:
+      interval: weekly
+      day: monday
+      time: "09:00"
+    open-pull-requests-limit: 3
+    reviewers:
+      - AbdolHamidDev
+    assignees:
+      - AbdolHamidDev
+    labels:
+      - dependencies
+      - github-actions
+    commit-message:
+      prefix: "chore(actions)"
+      include: scope
+
+  # Docker dependencies
+  - package-ecosystem: docker
+    directory: /backend
+    schedule:
+      interval: weekly
+      day: monday
+      time: "09:00"
+    open-pull-requests-limit: 3
+    reviewers:
+      - AbdolHamidDev
+    assignees:
+      - AbdolHamidDev
+    labels:
+      - dependencies
+      - docker
+    commit-message:
+      prefix: "chore(docker)"
+      include: scope
+
+  - package-ecosystem: docker
+    directory: /pyBackend
+    schedule:
+      interval: weekly
+      day: monday
+      time: "09:00"
+    open-pull-requests-limit: 3
+    reviewers:
+      - AbdolHamidDev
+    assignees:
+      - AbdolHamidDev
+    labels:
+      - dependencies
+      - docker
+    commit-message:
+      prefix: "chore(docker)"
+      include: scope

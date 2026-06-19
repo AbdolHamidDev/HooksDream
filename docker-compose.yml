@@ -1,0 +1,103 @@
+version: '3.8'
+
+services:
+  # MongoDB Database
+  mongodb:
+    image: mongo:7.0
+    container_name: hooksdream-mongodb
+    restart: unless-stopped
+    ports:
+      - "27017:27017"
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: admin
+      MONGO_INITDB_ROOT_PASSWORD: admin123
+      MONGO_INITDB_DATABASE: hooksdream
+    volumes:
+      - mongodb_data:/data/db
+    networks:
+      - hooksdream-network
+    healthcheck:
+      test: echo 'db.runCommand("ping").ok' | mongosh localhost:27017/test --quiet
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # Node.js Backend
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: hooksdream-backend
+    restart: unless-stopped
+    ports:
+      - "5000:5000"
+    environment:
+      - NODE_ENV=development
+      - PORT=5000
+      - MONGODB_URI=mongodb://admin:admin123@mongodb:27017/hooksdream?authSource=admin
+      - JWT_SECRET=your_jwt_secret_here_change_in_production
+      - CLOUDINARY_URL=cloudinary://your_cloud_name:your_api_key@your_cloud_name
+    volumes:
+      - ./backend:/app
+      - /app/node_modules
+    depends_on:
+      mongodb:
+        condition: service_healthy
+    networks:
+      - hooksdream-network
+    command: npm run dev
+
+  # Python Backend
+  pybackend:
+    build:
+      context: ./pyBackend
+      dockerfile: Dockerfile
+    container_name: hooksdream-pybackend
+    restart: unless-stopped
+    ports:
+      - "8000:8000"
+    environment:
+      - ENVIRONMENT=development
+      - HOST=0.0.0.0
+      - PORT=8000
+      - NODE_BACKEND_URL=http://backend:5000
+      - UNSPLASH_ACCESS_KEY=your_unsplash_access_key_here
+      - BOT_ENABLED=true
+    volumes:
+      - ./pyBackend:/app
+      - /app/__pycache__
+    depends_on:
+      - backend
+    networks:
+      - hooksdream-network
+    command: python run.py
+
+  # Frontend
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    container_name: hooksdream-frontend
+    restart: unless-stopped
+    ports:
+      - "5173:5173"
+    environment:
+      - VITE_API_URL=http://localhost:5000/api
+      - VITE_SOCKET_URL=http://localhost:5000
+      - VITE_NODE_ENV=development
+    volumes:
+      - ./frontend:/app
+      - /app/node_modules
+    depends_on:
+      - backend
+    networks:
+      - hooksdream-network
+    command: npm run dev
+
+volumes:
+  mongodb_data:
+    driver: local
+
+networks:
+  hooksdream-network:
+    driver: bridge

@@ -1,0 +1,41 @@
+# These are supported funding model platforms
+
+# GitHub Sponsors
+# sponsors:
+#   - username
+
+# Patreon
+# patreon: username
+
+# Open Collective
+# open_collective: project-name
+
+# Ko-fi
+# ko_fi: username
+
+# Tidelift
+# tidelift: platform/package-name
+
+# Custom sponsorship links
+# custom: ["https://www.buymeacoffee.com/username", "https://paypal.me/username"]
+
+# GitHub Sponsors
+sponsors:
+  - AbdolHamidDev
+
+# Buy Me a Coffee
+ko_fi: hamidabdol
+
+# Open Collective
+# open_collective: hooksdream
+
+# Patreon
+# patreon: AbdolHamidDev
+
+# Liberapay
+# liberapay: AbdolHamidDev
+
+# Custom links
+custom: 
+  - "https://www.buymeacoffee.com/hamidabdol"
+  - "https://www.linkedin.com/in/hamidabdol"

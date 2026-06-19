@@ -1,0 +1,17 @@
+blank_issues_enabled: false
+contact_links:
+  - name: 💬 Discord Community
+    url: https://discord.gg/hooksdream
+    about: Join our Discord community for discussions and support
+  - name: 📖 Documentation
+    url: https://github.com/AbdolHamidDev/HooksDream/tree/main/docs
+    about: Read the official documentation
+  - name: 💼 LinkedIn
+    url: https://www.linkedin.com/in/hamidabdol
+    about: Connect with the maintainer
+  - name: 📧 Email
+    url: mailto:abdolhamid.dev@gmail.com
+    about: Contact the maintainer directly
+  - name: ☕ Buy Me a Coffee
+    url: https://buymeacoffee.com/hamidabdol
+    about: Support the project

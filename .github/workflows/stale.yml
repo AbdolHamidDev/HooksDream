@@ -1,0 +1,64 @@
+name: Mark stale issues and pull requests
+
+on:
+  schedule:
+    - cron: '0 0 * * *'  # Run daily at midnight
+  workflow_dispatch:  # Allow manual trigger
+
+jobs:
+  stale:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/stale@v9
+        with:
+          # Issue settings
+          stale-issue-message: |
+            👋 Hello! This issue has been automatically marked as stale because it has not had recent activity. 
+            
+            It will be closed in 7 days if no further activity occurs. If this issue is still relevant:
+            - Add a comment with updated information
+            - Remove the `stale` label
+            - Or simply react with 👍 to keep it open
+            
+            Thank you for your contribution! 🙏
+          
+          stale-pr-message: |
+            👋 Hello! This pull request has been automatically marked as stale because it has not had recent activity.
+            
+            It will be closed in 14 days if no further activity occurs. If this PR is still being worked on:
+            - Add a comment with a status update
+            - Remove the `stale` label
+            - Or push new commits to this PR
+            
+            Thank you for your contribution! 🙏
+          
+          close-issue-message: |
+            This issue has been automatically closed due to inactivity. If you believe this was closed in error, please feel free to reopen it or create a new issue with updated information.
+          
+          close-pr-message: |
+            This pull request has been automatically closed due to inactivity. If you'd like to continue working on this, please don't hesitate to reopen it or submit a new PR.
+          
+          # Days before marking as stale
+          days-before-stale: 30
+          days-before-close: 7
+          days-before-pr-close: 14
+          
+          # Labels to apply
+          stale-issue-label: 'stale'
+          stale-pr-label: 'stale'
+          
+          # Exemptions
+          exempt-issue-labels: 'pinned,security,in-progress'
+          exempt-pr-labels: 'pinned,security,in-progress'
+          
+          # Only mark issues with these labels as stale (empty = all issues)
+          only-labels: ''
+          
+          # Operations to perform
+          operations-per-run: 50
+          
+          # Debug mode (set to true to see what would happen)
+          debug-only: false
+          
+          # Repository token
+          repo-token: ${{ secrets.GITHUB_TOKEN }}
