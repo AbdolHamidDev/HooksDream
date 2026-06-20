@@ -222,6 +222,7 @@ apidocs/
 
 # Vite
 dist/
+dev-dist/
 .vite/
 
 # Misc
