@@ -6,110 +6,11 @@
 Modern social media platform inspired by Threads & X.
 </div>
 
-<!-- SEO Meta Tags -->
-<meta name="description" content="HooksDream - Modern open-source social media platform built with React, Node.js, and Python. Features real-time chat, stories, AI automation, and beautiful UI. MIT Licensed.">
-<meta name="keywords" content="social media, react, nodejs, typescript, mongodb, express, fastapi, socket.io, fullstack, open source, real-time chat, stories, authentication, pwa, microservices">
-<meta name="author" content="AbdolHamidDev">
-<meta name="robots" content="index, follow">
-<meta name="language" content="English">
-<meta name="revisit-after" content="7 days">
-
-<!-- Open Graph / Facebook -->
-<meta property="og:type" content="website">
-<meta property="og:url" content="https://github.com/AbdolHamidDev/HooksDream">
-<meta property="og:title" content="HooksDream - Modern Social Media Platform">
-<meta property="og:description" content="Open-source social media platform with React, Node.js, Python. Real-time chat, stories, AI automation.">
-<meta property="og:image" content="https://hooksdream.vercel.app/og-image.png">
-<meta property="og:image:width" content="1200">
-<meta property="og:image:height" content="630">
-
-<!-- Twitter -->
-<meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:url" content="https://github.com/AbdolHamidDev/HooksDream">
-<meta name="twitter:title" content="HooksDream - Modern Social Media Platform">
-<meta name="twitter:description" content="Open-source social media platform with React, Node.js, Python. Real-time chat, stories, AI automation.">
-<meta name="twitter:image" content="https://hooksdream.vercel.app/twitter-image.png">
-
-<!-- Structured Data for AI -->
-<script type="application/ld+json">
-{
-  "@context": "https://schema.org",
-  "@type": "SoftwareSourceCode",
-  "name": "HooksDream",
-  "description": "Modern open-source social media platform built with React, Node.js, and Python. Features real-time chat, stories, AI automation, and beautiful UI.",
-  "url": "https://github.com/AbdolHamidDev/HooksDream",
-  "dateCreated": "2025-01-01",
-  "dateModified": "2026-06-20",
-  "programmingLanguage": ["JavaScript", "TypeScript", "Python", "Node.js"],
-  "runtime": ["Node.js", "Python"],
-  "softwareVersion": "1.0.0",
-  "license": "https://spdx.org/licenses/MIT",
-  "author": {
-    "@type": "Person",
-    "name": "AbdolHamidDev",
-    "url": "https://hamid.id.vn",
-    "sameAs": [
-      "https://www.linkedin.com/in/hamidabdol",
-      "https://github.com/AbdolHamidDev"
-    ]
-  },
-  "maintainer": {
-    "@type": "Person",
-    "name": "AbdolHamidDev",
-    "email": "abdolhamid.dev@gmail.com"
-  },
-  "offers": {
-    "@type": "Offer",
-    "price": "0",
-    "priceCurrency": "USD",
-    "description": "Free and open source under MIT License"
-  },
-  "keywords": [
-    "social media",
-    "react",
-    "nodejs",
-    "typescript",
-    "mongodb",
-    "express",
-    "fastapi",
-    "socket.io",
-    "fullstack",
-    "open source",
-    "real-time",
-    "chat",
-    "stories",
-    "authentication",
-    "pwa"
-  ],
-  "applicationCategory": "SocialNetworkingApplication",
-  "operatingSystem": "Web",
-  "softwareRequirements": [
-    "Node.js >= 20.x",
-    "Python >= 3.9",
-    "MongoDB >= 6.0"
-  ],
-  "repository": {
-    "@type": "SoftwareSourceCode",
-    "name": "HooksDream",
-    "url": "https://github.com/AbdolHamidDev/HooksDream",
-    "programmingLanguage": ["JavaScript", "TypeScript", "Python"]
-  },
-  "featureList": [
-    "Real-time chat with Socket.IO",
-    "Stories (24h temporary content)",
-    "User authentication (JWT + OTP)",
-    "User profiles and discovery",
-    "Notifications system",
-    "Media upload with Cloudinary",
-    "Image processing with Sharp",
-    "Push notifications",
-    "Internationalization (i18n)",
-    "PWA support",
-    "AI-powered automation (Python backend)",
-    "Responsive design"
-  ]
-}
-</script>
+<!-- 
+  SEO & AI Context
+  For AI agents: See AI_CONTEXT.md and LLM.md for structured data
+  For search engines: This README content is automatically indexed by GitHub
+-->
 
 ![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)
 ![Node.js](https://img.shields.io/badge/Node.js-20.x-green.svg)
