@@ -1,0 +1,14 @@
+# robots.txt for HooksDream
+# https://hooksdream.vercel.app
+# Last updated: 2026-06-20
+
+# Allow all search engines to crawl the entire site
+User-agent: *
+Allow: /
+Crawl-delay: 10
+
+# Sitemap location - use Vercel deployment URL
+Sitemap: https://hooksdream.vercel.app/sitemap.xml
+
+# Host directive (Yandex)
+Host: https://hooksdream.vercel.app
