@@ -1,13 +1,42 @@
 {
-  "rewrites": [],
+  "rewrites": [
+    { "source": "/((?!robots\\.txt|sitemap\\.xml|assets|favicon\\.ico|apple-touch-icon|favicon-.*|site\\.webmanifest|logo\\.png|og-image\\.(?:png|jpg)|twitter-image\\.(?:png|jpg)|icon-.*|web-app-manifest-.*).*)", "destination": "/index.html" }
+  ],
   "cleanUrls": true,
   "headers": [
     {
-      "source": "/(.*)",
+      "source": "/assets/(.*)",
       "headers": [
         {
           "key": "Cache-Control",
           "value": "public, max-age=31536000, immutable"
+        }
+      ]
+    },
+    {
+      "source": "/(.*)\\.(js|css|png|jpg|jpeg|gif|svg|ico|webp|woff2?|ttf|eot)",
+      "headers": [
+        {
+          "key": "Cache-Control",
+          "value": "public, max-age=31536000, immutable"
+        }
+      ]
+    },
+    {
+      "source": "/robots.txt",
+      "headers": [
+        {
+          "key": "Cache-Control",
+          "value": "public, max-age=86400, must-revalidate"
+        }
+      ]
+    },
+    {
+      "source": "/sitemap.xml",
+      "headers": [
+        {
+          "key": "Cache-Control",
+          "value": "public, max-age=86400, must-revalidate"
         }
       ]
     }
