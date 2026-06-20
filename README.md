@@ -1,4 +1,10 @@
+<div align="center">
+  <img src="./frontend/public/logo.png" alt="HooksDream Logo" width="120">
+
 # HooksDream
+
+Modern social media platform inspired by Threads & X.
+</div>
 
 ![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)
 ![Node.js](https://img.shields.io/badge/Node.js-20.x-green.svg)
