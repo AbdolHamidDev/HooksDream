@@ -26,10 +26,117 @@ Modern social media platform inspired by Threads & X.
 
 ## 📸 Screenshots
 
-<p align="center">
-  <img src="./Screenshots/feedpage.png" alt="Desktop Feed" width="65%">
-  <img src="./Screenshots/profile-page-mobile.png" alt="Mobile Profile" width="22%">
-</p>
+<table>
+  <tr>
+    <td align="center" colspan="2">
+      <img src="./Screenshots/feed-desktop.png" alt="Desktop Feed" width="100%">
+      <br />
+      <em>🖥️ Desktop Feed - Full Width</em>
+    </td>
+  </tr>
+  <tr>
+    <td align="center" width="50%">
+      <img src="./Screenshots/feed.png" alt="Mobile Feed" width="100%" style="max-width: 375px;">
+      <br />
+      <em>📱 Mobile Feed View</em>
+    </td>
+    <td align="center" width="50%">
+      <img src="./Screenshots/login.png" alt="Login" width="100%" style="max-width: 375px;">
+      <br />
+      <em>🔐 Login & Authentication</em>
+    </td>
+  </tr>
+  <tr>
+    <td align="center">
+      <img src="./Screenshots/create-post.png" alt="Create Post" width="100%">
+      <br />
+      <em>✍️ Create New Post</em>
+    </td>
+    <td align="center">
+      <img src="./Screenshots/profile-user.png" alt="User Profile" width="100%">
+      <br />
+      <em>👤 User Profile Page</em>
+    </td>
+  </tr>
+  <tr>
+    <td align="center">
+      <img src="./Screenshots/friend.png" alt="Friends" width="100%">
+      <br />
+      <em>👥 Friends & Friend Requests</em>
+    </td>
+    <td align="center">
+      <img src="./Screenshots/chat-list.png" alt="Chat List" width="100%">
+      <br />
+      <em>💬 Chat - Conversations List</em>
+    </td>
+  </tr>
+  <tr>
+    <td align="center">
+      <img src="./Screenshots/chat-detail.png" alt="Chat Detail" width="100%">
+      <br />
+      <em>💬 Real-time Chat Messages</em>
+    </td>
+    <td align="center">
+      <img src="./Screenshots/notifications.png" alt="Notifications" width="100%">
+      <br />
+      <em>🔔 Real-time Notifications</em>
+    </td>
+  </tr>
+  <tr>
+    <td align="center">
+      <img src="./Screenshots/sreach.png" alt="Search" width="100%">
+      <br />
+      <em>🔍 Search Users & Posts</em>
+    </td>
+    <td align="center"></td>
+  </tr>
+</table>
+
+### 📸 Stories Feature
+
+<table>
+  <tr>
+    <td align="center" width="33%">
+      <img src="./Screenshots/story-feed.png" alt="Story Feed" width="100%">
+      <br />
+      <em>📖 Story Feed View</em>
+    </td>
+    <td align="center" width="33%">
+      <img src="./Screenshots/story-post.png" alt="Story Post" width="100%">
+      <br />
+      <em>📸 Create Story Post</em>
+    </td>
+    <td align="center" width="33%">
+      <img src="./Screenshots/story-view.png" alt="Story View" width="100%">
+      <br />
+      <em>👁️ View Story</em>
+    </td>
+  </tr>
+  <tr>
+    <td align="center">
+      <img src="./Screenshots/story-post-1.png" alt="Story Post 1" width="100%">
+      <br />
+      <em>🖼️ Story Creation - Option 1</em>
+    </td>
+    <td align="center">
+      <img src="./Screenshots/story-post-2.png" alt="Story Post 2" width="100%">
+      <br />
+      <em>🖼️ Story Creation - Option 2</em>
+    </td>
+    <td align="center">
+      <img src="./Screenshots/story-post-3.png" alt="Story Post 3" width="100%">
+      <br />
+      <em>🖼️ Story Creation - Option 3</em>
+    </td>
+  </tr>
+  <tr>
+    <td align="center" colspan="3">
+      <img src="./Screenshots/archived-posts.png" alt="Archived Posts" width="100%">
+      <br />
+      <em>🗂️ Archived Stories</em>
+    </td>
+  </tr>
+</table>
 
 ## Tech Stack
 
