@@ -1,5 +1,6 @@
 {
   "rewrites": [],
+  "cleanUrls": true,
   "headers": [
     {
       "source": "/(.*)",
