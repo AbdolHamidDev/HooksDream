@@ -8,7 +8,7 @@ Modern social media platform inspired by Threads & X.
 
 <!-- 
   SEO & AI Context
-  For AI agents: See AI_CONTEXT.md and LLM.md for structured data
+  For AI agents: See frontend/public/AI_CONTEXT.md and frontend/public/LLM.md for structured data
   For search engines: This README content is automatically indexed by GitHub
 -->
 
@@ -65,7 +65,7 @@ Modern social media platform inspired by Threads & X.
 
 ### DevOps & Deployment
 - **Docker** - Containerization
-- **Railway** - Backend hosting (Node.js & Python)
+- **Render** - Backend hosting (Node.js & Python)
 - **Vercel / Netlify** - Frontend hosting
 
 ## Project Structure
@@ -396,15 +396,15 @@ Contributions are what make the open source community such an amazing place to l
 - Add tests for new features
 - Be respectful and inclusive in discussions
 
-Please check out our [Contributing Guidelines](CONTRIBUTING.md) for more details.
+Please check out our [Contributing Guidelines](docs/CONTRIBUTING.md) for more details.
 
 ## Code of Conduct
 
-By participating in this project, you agree to maintain a respectful and inclusive environment. Please read our [Code of Conduct](CODE_OF_CONDUCT.md) before contributing.
+By participating in this project, you agree to maintain a respectful and inclusive environment. Please read our [Code of Conduct](docs/CODE_OF_CONDUCT.md) before contributing.
 
 ## Security
 
-We take security seriously. If you discover a security vulnerability, please follow our [Security Policy](SECURITY.md) to report it responsibly.
+We take security seriously. If you discover a security vulnerability, please follow our [Security Policy](docs/SECURITY.md) to report it responsibly.
 
 ## License
 
@@ -487,7 +487,7 @@ HooksDream can be deployed on:
 - **Frontend**: Vercel or Netlify
 - **Backend**: Render
 - **Database**: MongoDB Atlas
-See [DEVELOPMENT.md](DEVELOPMENT.md) for deployment guides.
+See [docs/RENDER_DEPLOYMENT.md](docs/RENDER_DEPLOYMENT.md) for deployment guides.
 
 ## Why Choose HooksDream?
 
