@@ -222,7 +222,7 @@ Create `schema.json` in root:
     },
     "deployment": {
       "frontend": ["vercel", "netlify"],
-      "backend": ["railway"],
+      "backend": ["render"],
       "database": ["mongodb-atlas"],
       "media": ["cloudinary"]
     },
@@ -497,7 +497,7 @@ HooksDream uses:
 - **Frontend**: React 18, TypeScript, Vite, Tailwind CSS, shadcn/ui
 - **Backend**: Node.js, Express, MongoDB, Socket.IO
 - **Python**: FastAPI for AI automation and bot services
-- **DevOps**: Docker, Railway, Vercel
+- **DevOps**: Docker, Render, Vercel
 
 ### Is HooksDream free to use?
 Yes! HooksDream is completely free and open-source under the MIT License. You can use it for personal or commercial projects.
@@ -521,12 +521,12 @@ HooksDream includes a Python backend with:
 - Marcin Bot for social media automation
 - Unsplash integration for high-quality images
 - Scheduled tasks for auto-posting
-- Keep-alive service for Railway deployment
+- Keep-alive service for Render deployment
 
 ### How do I deploy HooksDream?
 HooksDream can be deployed on:
 - **Frontend**: Vercel or Netlify
-- **Backend**: Railway
+- **Backend**: Render
 - **Database**: MongoDB Atlas
 See [DEVELOPMENT.md](DEVELOPMENT.md) for deployment guides.
 ```
@@ -554,7 +554,7 @@ See [DEVELOPMENT.md](DEVELOPMENT.md) for deployment guides.
 
 ### Key Advantages
 1. **Modern Stack**: Latest versions of React, Node.js, Python
-2. **Production Ready**: Deployed on Railway, Vercel
+2. **Production Ready**: Deployed on Render, Vercel
 3. **Well Documented**: Comprehensive guides and API docs
 4. **Active Development**: Regular updates and improvements
 5. **Community Driven**: Open to contributions
@@ -627,7 +627,7 @@ This file provides context for AI agents, crawlers, and assistants.
 - **Backend**: Node.js + Express + MongoDB
 - **AI Backend**: Python + FastAPI
 - **Real-time**: Socket.IO
-- **Deployment**: Railway (backend), Vercel (frontend)
+- **Deployment**: Render (backend), Vercel (frontend)
 
 ## Core Capabilities
 1. User authentication and authorization
@@ -686,7 +686,7 @@ A: Python backend with bot automation and Unsplash integration
 ## Keywords for Discovery
 social media, react, nodejs, typescript, mongodb, express, fastapi, 
 socket.io, fullstack, open source, real-time, chat, stories, 
-authentication, pwa, microservices, docker, railway, vercel
+authentication, pwa, microservices, docker, render, vercel
 
 ## Related Projects
 - React (frontend framework)
@@ -892,9 +892,9 @@ gtag('config', 'GA_MEASUREMENT_ID', {
    - Target: Advanced
    - Keywords: microservices nodejs python
 
-4. **"Deploying Full-Stack Apps on Railway and Vercel"**
+4. **"Deploying Full-Stack Apps on Render and Vercel"**
    - Target: Intermediate
-   - Keywords: railway vercel deployment
+   - Keywords: render vercel deployment
 
 5. **"Adding AI Features to Your Web App"**
    - Target: Advanced

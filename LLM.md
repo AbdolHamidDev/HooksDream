@@ -187,7 +187,7 @@ Microservices Architecture
 
 **DevOps:**
 - Docker & Docker Compose
-- Railway (backend hosting)
+- Render (backend hosting)
 - Vercel/Netlify (frontend)
 - MongoDB Atlas (database)
 - Cloudinary (media storage)
@@ -425,7 +425,7 @@ HooksDream uses a microservices architecture with three main services:
    - Unsplash integration for images
    - Scheduled tasks with AsyncIO
 
-All services are containerized with Docker and deployed on Railway/Vercel.
+All services are containerized with Docker and deployed on Render/Vercel.
 ```
 
 ### Template 3: Learning Resource
@@ -577,7 +577,7 @@ features:
 
 deployment:
   frontend: Vercel/Netlify
-  backend: Railway
+  backend: Render
   database: MongoDB Atlas
   media: Cloudinary
 

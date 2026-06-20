@@ -26,7 +26,7 @@ export const createSimpleSearchClient = () => {
             const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 
               (import.meta.env.MODE === 'development' 
                 ? 'http://localhost:5000' 
-                : 'https://just-solace-production.up.railway.app');
+                : 'https://hooksdream.onrender.com');
             
             const url = `${API_BASE_URL}/api/search?q=${encodeURIComponent(query.trim())}&type=all&limit=10`;
             const response = await fetch(url);
@@ -188,7 +188,7 @@ export const getTrendingHashtags = async () => {
     const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 
       (import.meta.env.MODE === 'development' 
         ? 'http://localhost:5000' 
-        : 'https://just-solace-production.up.railway.app');
+        : 'https://hooksdream.onrender.com');
     
     const url = `${API_BASE_URL}/api/search/trending?limit=10`;
     const response = await fetch(url);
@@ -217,7 +217,7 @@ export const getSearchSuggestions = async (query: string) => {
     const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 
       (import.meta.env.MODE === 'development' 
         ? 'http://localhost:5000' 
-        : 'https://just-solace-production.up.railway.app');
+        : 'https://hooksdream.onrender.com');
     
     const url = `${API_BASE_URL}/api/search/suggestions?q=${encodeURIComponent(query)}&limit=5`;
     const response = await fetch(url);

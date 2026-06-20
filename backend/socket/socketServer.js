@@ -16,16 +16,18 @@ class SocketServer {
                     "https://hooksdream.netlify.app",
                     "https://bot-hooksdream-production.up.railway.app",
                     "https://just-solace-production.up.railway.app",
+                    "https://hooksdream.onrender.com",
                     /^https:\/\/.*\.vercel\.app$/,
                     /^https:\/\/.*\.netlify\.app$/,
                     /^https:\/\/.*\.fly\.dev$/,
-                    /^https:\/\/.*\.railway\.app$/
+                    /^https:\/\/.*\.railway\.app$/,
+                    /^https:\/\/.*\.onrender\.com$/
                 ],
                 methods: ["GET", "POST"],
                 credentials: true
             },
             transports: ['websocket', 'polling'],
-            // Railway optimizations
+            // Render optimizations
             pingTimeout: 60000,
             pingInterval: 25000,
             upgradeTimeout: 30000,

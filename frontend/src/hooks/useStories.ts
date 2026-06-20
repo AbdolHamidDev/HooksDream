@@ -7,7 +7,7 @@ import { useSocket } from '@/hooks/useSocket';
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 
   (import.meta.env.MODE === 'development' 
     ? 'http://localhost:8080' 
-    : 'https://just-solace-production.up.railway.app');
+    : 'https://hooksdream.onrender.com');
 
 export interface GetStoriesParams {
   centerX?: number;

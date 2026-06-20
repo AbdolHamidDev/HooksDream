@@ -69,11 +69,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Marcin Bot automation service
 - Unsplash API integration
 - Scheduled tasks with AsyncIO
-- Keep-alive service for Railway
+- Keep-alive service for Render
 
 ### DevOps
 - Docker configuration
-- Railway deployment
+- Render deployment
 - Vercel/Netlify deployment
 - Environment configuration
 

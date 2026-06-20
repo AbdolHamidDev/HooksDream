@@ -177,7 +177,7 @@ HooksDream/
 - **Marcin Bot** - Social media interaction automation
 - **Unsplash Integration** - High-quality images from Unsplash
 - **Scheduled Tasks** - Auto post, scheduled interactions
-- **Keep-alive Service** - Keep server active on Railway
+- **Keep-alive Service** - Keep server active on Render
 
 ## Installation and Setup
 
@@ -341,10 +341,10 @@ uvicorn main:app --reload  # Development with auto-reload
 
 ## Deployment
 
-### Railway (Backend)
+### Render (Backend)
 - Node.js backend: Deploy from `backend/` directory
 - Python backend: Deploy from `pyBackend/` directory
-- Use `Dockerfile` or Railway Nixpacks
+- Use `Dockerfile` or Render Nixpacks
 
 ### Vercel / Netlify (Frontend)
 - Build command: `npm run build`
@@ -456,7 +456,7 @@ HooksDream uses:
 - **Frontend**: React 18, TypeScript, Vite, Tailwind CSS, shadcn/ui
 - **Backend**: Node.js, Express, MongoDB, Socket.IO
 - **Python**: FastAPI for AI automation and bot services
-- **DevOps**: Docker, Railway, Vercel
+- **DevOps**: Docker, Render, Vercel
 
 ### Is HooksDream free to use?
 Yes! HooksDream is completely free and open-source under the MIT License. You can use it for personal or commercial projects.
@@ -480,12 +480,12 @@ HooksDream includes a Python backend with:
 - Marcin Bot for social media automation
 - Unsplash integration for high-quality images
 - Scheduled tasks for auto-posting
-- Keep-alive service for Railway deployment
+- Keep-alive service for Render deployment
 
 ### How do I deploy HooksDream?
 HooksDream can be deployed on:
 - **Frontend**: Vercel or Netlify
-- **Backend**: Railway
+- **Backend**: Render
 - **Database**: MongoDB Atlas
 See [DEVELOPMENT.md](DEVELOPMENT.md) for deployment guides.
 
@@ -509,7 +509,7 @@ See [DEVELOPMENT.md](DEVELOPMENT.md) for deployment guides.
 
 ### Key Advantages
 1. **Modern Stack**: Latest versions of React, Node.js, Python
-2. **Production Ready**: Deployed on Railway, Vercel
+2. **Production Ready**: Deployed on Render, Vercel
 3. **Well Documented**: Comprehensive guides and API docs
 4. **Active Development**: Regular updates and improvements
 5. **Community Driven**: Open to contributions

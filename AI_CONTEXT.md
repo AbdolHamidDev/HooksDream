@@ -112,7 +112,7 @@ architecture:
 - **Marcin Bot**: Social media automation bot
 - **Unsplash Integration**: High-quality image sourcing
 - **Scheduled Tasks**: AsyncIO-based scheduling
-- **Keep-alive Service**: Prevent Railway sleep
+- **Keep-alive Service**: Prevent Render sleep
 - **Bot Scheduler**: Automated interactions
 
 ## Technical Specifications
@@ -170,7 +170,7 @@ specifications:
 
 ### DevOps
 - **Containerization**: Docker, Docker Compose
-- **Backend Hosting**: Railway
+- **Backend Hosting**: Render
 - **Frontend Hosting**: Vercel / Netlify
 - **Database**: MongoDB Atlas
 - **Media Storage**: Cloudinary
@@ -319,10 +319,10 @@ cd pyBackend && pip install -r requirements.txt && python run.py
 
 ### Production Deployment
 - **Frontend**: Vercel / Netlify
-- **Backend**: Railway
+- **Backend**: Render
 - **Database**: MongoDB Atlas
 - **Media**: Cloudinary
-- **Python Backend**: Railway
+- **Python Backend**: Render
 
 ### Environment Variables Required
 - `MONGODB_URI` - Database connection
@@ -357,7 +357,7 @@ A: Yes, real-time chat, notifications, and live updates powered by Socket.IO.
 A: Python backend with Marcin Bot for automation, Unsplash integration for images, scheduled tasks, and keep-alive service.
 
 **Q: Can I deploy it to production?**
-A: Yes, it's already deployed on Railway (backend) and Vercel (frontend). You can deploy your own instance following the guides.
+A: Yes, it's already deployed on Render (backend) and Vercel (frontend). You can deploy your own instance following the guides.
 
 **Q: How do I contribute?**
 A: Read CONTRIBUTING.md, fork the repo, create a branch, make changes, and submit a pull request.
@@ -434,7 +434,7 @@ A: Yes, live demo at https://hooksdream.vercel.app
 ### DevOps
 - Docker
 - Docker Compose
-- Railway
+- Render
 - Vercel
 - Netlify
 - MongoDB Atlas

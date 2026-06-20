@@ -15,7 +15,7 @@ export default defineConfig(({ mode }) => {
   // Allow override via environment variable
   const apiTarget = process.env.VITE_API_URL || (isDev 
     ? 'http://localhost:8080'  // Match backend PORT in .env.example / typical local .env
-    : 'https://just-solace-production.up.railway.app'); // Production backend
+    : 'https://hooksdream.onrender.com'); // Production backend
   
   console.log(`🔗 API Target: ${apiTarget} (mode: ${mode})`);
 

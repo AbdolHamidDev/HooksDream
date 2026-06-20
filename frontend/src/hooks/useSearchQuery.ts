@@ -74,7 +74,7 @@ const searchAPI = {
     const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 
       (import.meta.env.MODE === 'development' 
         ? 'http://localhost:5000' 
-        : 'https://just-solace-production.up.railway.app');
+        : 'https://hooksdream.onrender.com');
     
     const response = await fetch(`${API_BASE_URL}/api/search?q=${encodeURIComponent(query)}&limit=20`, {
       headers: token ? { 'Authorization': `Bearer ${token}` } : {},
@@ -129,7 +129,7 @@ const searchAPI = {
     const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 
       (import.meta.env.MODE === 'development' 
         ? 'http://localhost:5000' 
-        : 'https://just-solace-production.up.railway.app');
+        : 'https://hooksdream.onrender.com');
     
     const response = await fetch(`${API_BASE_URL}/api/search/trending?limit=10`);
     const data = await response.json();
@@ -147,7 +147,7 @@ const searchAPI = {
     const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 
       (import.meta.env.MODE === 'development' 
         ? 'http://localhost:5000' 
-        : 'https://just-solace-production.up.railway.app');
+        : 'https://hooksdream.onrender.com');
 
     const response = await fetch(`${API_BASE_URL}/api/search/history`, {
       headers: { 'Authorization': `Bearer ${token}` }
@@ -166,7 +166,7 @@ const searchAPI = {
     const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 
       (import.meta.env.MODE === 'development' 
         ? 'http://localhost:5000' 
-        : 'https://just-solace-production.up.railway.app');
+        : 'https://hooksdream.onrender.com');
 
     const response = await fetch(`${API_BASE_URL}/api/search/history/${encodeURIComponent(query)}`, {
       method: 'DELETE',
@@ -183,7 +183,7 @@ const searchAPI = {
     const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 
       (import.meta.env.MODE === 'development' 
         ? 'http://localhost:5000' 
-        : 'https://just-solace-production.up.railway.app');
+        : 'https://hooksdream.onrender.com');
 
     const response = await fetch(`${API_BASE_URL}/api/search/history`, {
       method: 'DELETE',

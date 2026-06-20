@@ -105,7 +105,7 @@ When contributing to HooksDream, please follow these security best practices:
 - SQL/NoSQL injection prevention via Mongoose
 
 ### Infrastructure
-- Deployed on Railway with automatic HTTPS
+- Deployed on Render with automatic HTTPS
 - MongoDB connection uses SSL/TLS
 - Cloudinary handles secure media storage
 - Environment variables are not committed to version control

@@ -15,14 +15,14 @@ if (missingEnvVars.length > 0) {
   missingEnvVars.forEach(envVar => {
     console.error(`   - ${envVar}`);
   });
-  console.error('🔧 Please set these variables in Railway environment settings');
+  console.error('🔧 Please set these variables in Render environment settings');
   process.exit(1);
 }
 
 const app = express();
 const server = http.createServer(app);
 
-// Trust proxy for Railway deployment (fixes rate limiting issues)
+// Trust proxy for Render deployment (fixes rate limiting issues)
 app.set('trust proxy', 1);
 
 // Cloudinary Config - Tự động đọc từ CLOUDINARY_URL trong .env
@@ -40,14 +40,16 @@ app.use(cors({
       'https://hooksdream.vercel.app',
       'https://hooksdream.netlify.app',
       'https://just-solace-production.up.railway.app',
-      'https://bot-hooksdream-production.up.railway.app'
+      'https://bot-hooksdream-production.up.railway.app',
+      'https://hooksdream.onrender.com'
     ];
     
     const allowedPatterns = [
       /^https:\/\/.*\.vercel\.app$/,
       /^https:\/\/.*\.netlify\.app$/,
       /^https:\/\/.*\.fly\.dev$/,
-      /^https:\/\/.*\.railway\.app$/
+      /^https:\/\/.*\.railway\.app$/,
+      /^https:\/\/.*\.onrender\.com$/
     ];
     
     // Check exact matches
@@ -77,7 +79,7 @@ const MONGODB_URI = process.env.MONGODB_URI;
 
 if (!MONGODB_URI) {
   console.error('❌ MONGODB_URI environment variable is not set!');
-  console.error('🔧 Please set MONGODB_URI in Railway environment variables');
+  console.error('🔧 Please set MONGODB_URI in Render environment variables');
   process.exit(1);
 }
 
@@ -92,7 +94,7 @@ mongoose.connect(MONGODB_URI)
   })
   .catch(err => {
     console.error('❌ MongoDB connection failed:', err.message);
-    console.error('🔧 Check your MONGODB_URI in Railway environment variables');
+    console.error('🔧 Check your MONGODB_URI in Render environment variables');
     process.exit(1);
   });
 
@@ -122,7 +124,7 @@ app.get('/api/jwt-debug', (req, res) => {
   });
 });
 
-// Enhanced health check for Railway
+// Enhanced health check for Render
 app.get('/api/health', (req, res) => {
   const health = {
     status: 'ok',
@@ -132,8 +134,8 @@ app.get('/api/health', (req, res) => {
     db: mongoose.connection.readyState === 1 ? 'connected' : 'disconnected',
     cloudinary: cloudinary.config().cloud_name ? 'configured' : 'not configured',
     socketConnections: global.socketServer ? global.socketServer.getConnectedUsersCount() : 0,
-    platform: 'railway',
-    region: process.env.RAILWAY_REGION || process.env.FLY_REGION || 'unknown'
+    platform: 'render',
+    region: process.env.RENDER_REGION || process.env.FLY_REGION || 'unknown'
   };
   
   // Return 503 if critical services are down
