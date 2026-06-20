@@ -14,10 +14,10 @@
 
 ## 📸 Screenshots
 
-<div align="center">
-  <img src="https://via.placeholder.com/800x400/1a1a1a/FFF?text=HooksDream+Feed+Page" alt="Feed Page" width="45%">
-  <img src="https://via.placeholder.com/800x400/1a1a1a/FFF?text=HooksDream+Profile+Page" alt="Profile Page" width="45%">
-</div>
+<p align="center">
+  <img src="./Screenshots/feedpage.png" alt="Desktop Feed" width="65%">
+  <img src="./Screenshots/profile-page-mobile.png" alt="Mobile Profile" width="22%">
+</p>
 
 ## Tech Stack
 
