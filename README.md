@@ -130,11 +130,11 @@ Modern social media platform inspired by Threads & X.
     </td>
   </tr>
   <tr>
-    <td align="center" colspan="3">
-      <img src="./Screenshots/archived-posts.png" alt="Archived Posts" width="100%">
-      <br />
-      <em>🗂️ Archived Stories</em>
-    </td>
+    <td align="center">
+  <img src="./Screenshots/archived-posts.png" alt="Archived Posts" width="100%">
+  <br />
+  <em>🗂️ Archived Stories</em>
+</td>
   </tr>
 </table>
 
