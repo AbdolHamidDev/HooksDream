@@ -1,481 +1,465 @@
 <div align="center">
   <img src="./frontend/public/logo.png" alt="HooksDream Logo" width="120">
 
-# HooksDream
+  # HooksDream
 
-Modern social media platform inspired by Threads & X.
+  **Production-grade social media platform** built with microservices architecture. Real-time communication, AI automation, and modern UX.
+
+  [Live Demo](https://hooksdream.vercel.app) • [Documentation](#) • [Report Bug](https://github.com/AbdolHamidDev/HooksDream/issues) • [Request Feature](https://github.com/AbdolHamidDev/HooksDream/issues)
 </div>
 
-<!-- 
-  SEO & AI Context
-  For AI agents: See frontend/public/AI_CONTEXT.md and frontend/public/LLM.md for structured data
-  For search engines: This README content is automatically indexed by GitHub
--->
+---
 
-![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)
-![Node.js](https://img.shields.io/badge/Node.js-20.x-green.svg)
-![Python](https://img.shields.io/badge/Python-3.9%2B-blue.svg)
-![React](https://img.shields.io/badge/React-18-61DAFB.svg)
-![TypeScript](https://img.shields.io/badge/TypeScript-5.8-blue.svg)
-![MongoDB](https://img.shields.io/badge/MongoDB-Latest-47A248.svg)
-![FastAPI](https://img.shields.io/badge/FastAPI-Latest-009688.svg)
+## Table of Contents
 
-**HooksDream** is a modern social media platform built with a microservices architecture including Node.js backend, React frontend, and Python backend for AI/automation features.
+- [Overview](#overview)
+- [Architecture](#architecture)
+- [Tech Stack](#tech-stack)
+- [Project Structure](#project-structure)
+- [Core Features](#core-features)
+- [Getting Started](#getting-started)
+- [API Reference](#api-reference)
+- [Development](#development)
+- [Deployment](#deployment)
+- [Contributing](#contributing)
+- [Roadmap](#roadmap)
+- [License](#license)
 
-[**🚀 Live Demo**](https://hooksdream.vercel.app) • [**📖 Documentation**](#) • [**🐛 Report Bug**](https://github.com/AbdolHamidDev/HooksDream/issues) • [**✨ Request Feature**](https://github.com/AbdolHamidDev/HooksDream/issues)
+---
 
-## 📸 Screenshots
+## Overview
 
-<table>
-  <tr>
-    <td align="center" colspan="2">
-      <img src="./Screenshots/feed-desktop.png" alt="Desktop Feed" width="100%">
-      <br />
-      <em>🖥️ Desktop Feed - Full Width</em>
-    </td>
-  </tr>
-  <tr>
-    <td align="center" width="50%">
-      <img src="./Screenshots/feed.png" alt="Mobile Feed" width="100%" style="max-width: 375px;">
-      <br />
-      <em>📱 Mobile Feed View</em>
-    </td>
-    <td align="center" width="50%">
-      <img src="./Screenshots/login.png" alt="Login" width="100%" style="max-width: 375px;">
-      <br />
-      <em>🔐 Login & Authentication</em>
-    </td>
-  </tr>
-  <tr>
-    <td align="center">
-      <img src="./Screenshots/create-post.png" alt="Create Post" width="100%">
-      <br />
-      <em>✍️ Create New Post</em>
-    </td>
-    <td align="center">
-      <img src="./Screenshots/profile-user.png" alt="User Profile" width="100%">
-      <br />
-      <em>👤 User Profile Page</em>
-    </td>
-  </tr>
-  <tr>
-    <td align="center">
-      <img src="./Screenshots/friend.png" alt="Friends" width="100%">
-      <br />
-      <em>👥 Friends & Friend Requests</em>
-    </td>
-    <td align="center">
-      <img src="./Screenshots/chat-list.png" alt="Chat List" width="100%">
-      <br />
-      <em>💬 Chat - Conversations List</em>
-    </td>
-  </tr>
-  <tr>
-    <td align="center">
-      <img src="./Screenshots/chat-detail.png" alt="Chat Detail" width="100%">
-      <br />
-      <em>💬 Real-time Chat Messages</em>
-    </td>
-    <td align="center">
-      <img src="./Screenshots/notifications.png" alt="Notifications" width="100%">
-      <br />
-      <em>🔔 Real-time Notifications</em>
-    </td>
-  </tr>
-  <tr>
-    <td align="center">
-      <img src="./Screenshots/sreach.png" alt="Search" width="100%">
-      <br />
-      <em>🔍 Search Users & Posts</em>
-    </td>
-    <td align="center"></td>
-  </tr>
-</table>
+HooksDream is a full-stack social media platform demonstrating production-grade software engineering practices. Built with a microservices architecture separating concerns across Node.js (core API), React (frontend), and Python (AI/automation) services.
 
-### 📸 Stories Feature
+**Key Characteristics:**
+- Microservices architecture with clear service boundaries
+- Real-time bidirectional communication via WebSockets
+- JWT-based authentication with OTP verification
+- Media processing pipeline with Cloudinary + Sharp
+- AI-powered automation layer (Python/FastAPI)
+- PWA-enabled with offline support
+- Internationalization (i18n) ready
+- Comprehensive error handling and rate limiting
 
-<table>
-  <tr>
-    <td align="center" width="33%">
-      <img src="./Screenshots/story-feed.png" alt="Story Feed" width="100%">
-      <br />
-      <em>📖 Story Feed View</em>
-    </td>
-    <td align="center" width="33%">
-      <img src="./Screenshots/story-post.png" alt="Story Post" width="100%">
-      <br />
-      <em>📸 Create Story Post</em>
-    </td>
-    <td align="center" width="33%">
-      <img src="./Screenshots/story-view.png" alt="Story View" width="100%">
-      <br />
-      <em>👁️ View Story</em>
-    </td>
-  </tr>
-  <tr>
-    <td align="center">
-      <img src="./Screenshots/story-post-1.png" alt="Story Post 1" width="100%">
-      <br />
-      <em>🖼️ Story Creation - Option 1</em>
-    </td>
-    <td align="center">
-      <img src="./Screenshots/story-post-2.png" alt="Story Post 2" width="100%">
-      <br />
-      <em>🖼️ Story Creation - Option 2</em>
-    </td>
-    <td align="center">
-      <img src="./Screenshots/story-post-3.png" alt="Story Post 3" width="100%">
-      <br />
-      <em>🖼️ Story Creation - Option 3</em>
-    </td>
-  </tr>
-  <tr>
-    <td align="center">
-  <img src="./Screenshots/archived-posts.png" alt="Archived Posts" width="100%">
-  <br />
-  <em>🗂️ Archived Stories</em>
-</td>
-  </tr>
-</table>
+---
+
+## Architecture
+
+```
+┌─────────────────────────────────────────────────────────────┐
+│                         Client Layer                         │
+│  React 18 + TypeScript + Vite + Tailwind CSS + PWA         │
+└───────────────────────┬─────────────────────────────────────┘
+                        │
+        ┌───────────────┼───────────────┐
+        │               │               │
+   ┌────▼────┐    ┌────▼────┐    ┌────▼────┐
+   │  REST   │    │ WebSocket│   │  Push   │
+   │   API   │    │  Socket  │   │Notify   │
+   └────┬────┘    └────┬────┘    └─────────┘
+        │              │
+   ┌────▼──────────────▼────┐
+   │   API Gateway Layer    │
+   │  (Rate Limit + Auth)   │
+   └───────────┬────────────┘
+               │
+       ┌───────┴───────┐
+       │               │
+  ┌────▼────┐    ┌────▼──────────┐
+  │ Node.js │    │  Python       │
+  │ Backend │◄──►│  Backend      │
+  │ Express │    │  FastAPI      │
+  │ + MongoDB│   │  (AI/Bot)     │
+  └─────────┘    └───────────────┘
+       │
+  ┌────▼────────┐
+  │ Cloudinary  │
+  │ (Media CDN) │
+  └─────────────┘
+```
+
+**Design Principles:**
+- **Separation of Concerns**: Each service handles a specific domain
+- **Stateless Services**: Horizontal scaling ready
+- **Event-Driven**: Real-time updates via Socket.IO
+- **Async Processing**: Background jobs for media and notifications
+
+---
 
 ## Tech Stack
 
 ### Frontend
-- **React 18** + **TypeScript** + **Vite**
-- **Tailwind CSS** + **shadcn/ui** (Radix UI)
-- **React Router DOM** - Navigation
-- **TanStack Query** - State and cache management
-- **Zustand** - State management
-- **Socket.IO Client** - Real-time communication
-- **React Hook Form** + **Zod** - Form handling and validation
-- **i18next** - Internationalization
-- **Framer Motion** / **React Spring** - Animations
-- **Recharts** - Data visualization
-- **PWA** (Vite PWA Plugin)
+| Technology | Purpose | Version |
+|------------|---------|---------|
+| React | UI Framework | 18.x |
+| TypeScript | Type Safety | 5.8 |
+| Vite | Build Tool | Latest |
+| Tailwind CSS | Styling | Latest |
+| shadcn/ui | Component Library | Latest |
+| TanStack Query | Data Fetching & Cache | Latest |
+| Zustand | State Management | Latest |
+| Socket.IO Client | Real-time Communication | Latest |
+| React Hook Form + Zod | Form Management & Validation | Latest |
+| i18next | Internationalization | Latest |
+| Framer Motion | Animations | Latest |
+| Vite PWA Plugin | Progressive Web App | Latest |
 
-### Backend (Node.js - Express)
-- **Express.js** - Web framework
-- **MongoDB** + **Mongoose** - Database
-- **Socket.IO** - Real-time bidirectional communication
-- **JWT** (jsonwebtoken) - Authentication
-- **Cloudinary** + **Multer** + **Sharp** - Image/video upload and processing
-- **Node-cron** - Scheduled tasks
-- **Web Push** - Push notifications
-- **Express Rate Limit** - API rate limiting
-- **Cheerio** - Web scraping
+### Backend (Node.js)
+| Technology | Purpose | Version |
+|------------|---------|---------|
+| Express.js | Web Framework | 4.x |
+| MongoDB + Mongoose | Database & ODM | Latest |
+| Socket.IO | Real-time Communication | Latest |
+| JWT (jsonwebtoken) | Authentication | Latest |
+| Cloudinary + Multer + Sharp | Media Upload & Processing | Latest |
+| Node-cron | Scheduled Tasks | Latest |
+| Web Push | Push Notifications | Latest |
+| Express Rate Limit | API Protection | Latest |
+| Cheerio | Web Scraping | Latest |
 
-### Python Backend (FastAPI)
-- **FastAPI** - High-performance API framework
-- **Unsplash API** - Image sourcing
-- **Bot Service** - Social media automation (Marcin bot)
-- **AsyncIO** - Asynchronous task scheduling
+### Backend (Python)
+| Technology | Purpose | Version |
+|------------|---------|---------|
+| FastAPI | API Framework | Latest |
+| AsyncIO | Async Task Scheduling | Latest |
+| Unsplash API | Image Sourcing | - |
+| Bot Service | Social Media Automation | - |
 
-### DevOps & Deployment
-- **Docker** - Containerization
-- **Render** - Backend hosting (Node.js & Python)
-- **Vercel / Netlify** - Frontend hosting
+### Infrastructure
+| Technology | Purpose |
+|------------|---------|
+| Docker | Containerization |
+| MongoDB Atlas | Managed Database |
+| Render | Backend Hosting |
+| Vercel | Frontend Hosting |
+| Cloudinary | Media CDN & Processing |
+
+---
 
 ## Project Structure
 
 ```
 HooksDream/
-├── backend/                 # Node.js Backend (Express + MongoDB)
-│   ├── server.js           # Entry point, initializes server and Socket.IO
-│   ├── routes/             # API routes
-│   │   ├── auth.js         # Registration, login, verification
-│   │   ├── users.js        # User management
-│   │   ├── posts.js        # Post management
-│   │   ├── comments.js     # Comments
-│   │   ├── follow.js       # User following
-│   │   ├── chat.js         # Real-time messaging
-│   │   ├── notifications.js # Notifications
-│   │   ├── search.js       # Search
-│   │   ├── storyRoutes.js  # Stories (temporary images/videos)
-│   │   ├── friendDiscovery.js # Friend discovery
-│   │   └── botRoutes.js    # Bot integration
-│   ├── controllers/        # Business logic
-│   ├── models/             # Mongoose schemas
-│   ├── middleware/         # Auth, validation, rate limiting
-│   ├── services/           # Background services (story archive)
-│   ├── socket/             # Socket.IO server and handlers
-│   └── utils/              # Helper functions
+├── backend/                    # Node.js API Service
+│   ├── server.js              # Entry point, server initialization
+│   ├── routes/                # REST API routes
+│   │   ├── auth.js            # Authentication (register, login, OTP)
+│   │   ├── users.js           # User management
+│   │   ├── posts.js           # Post CRUD operations
+│   │   ├── comments.js        # Comment system
+│   │   ├── follow.js          # Follow/unfollow logic
+│   │   ├── chat.js            # Messaging endpoints
+│   │   ├── notifications.js   # Notification system
+│   │   ├── search.js          # Search functionality
+│   │   ├── storyRoutes.js     # Stories (ephemeral content)
+│   │   ├── friendDiscovery.js # Friend recommendations
+│   │   └── botRoutes.js       # Bot integration
+│   ├── controllers/           # Business logic layer
+│   ├── models/                # Mongoose schemas
+│   ├── middleware/            # Auth, validation, rate limiting
+│   ├── services/              # Background services
+│   ├── socket/                # Socket.IO handlers
+│   └── utils/                 # Helper functions
 │
-├── frontend/               # React Frontend (Vite + TypeScript)
+├── frontend/                   # React Application
 │   ├── src/
-│   │   ├── pages/          # Main pages
-│   │   │   ├── FeedPage.tsx           # Home - Post feed
-│   │   │   ├── CreatePostPage.tsx     # Create new post
-│   │   │   ├── PostDetailPage.tsx     # Post details
-│   │   │   ├── ProfilePage.tsx        # User profile page
-│   │   │   ├── EditProfilePage.tsx    # Edit profile
-│   │   │   ├── StoriesPage.tsx        # View stories
-│   │   │   ├── MessagesPage.tsx       # Messages
-│   │   │   ├── NotificationsPage.tsx  # Notifications
-│   │   │   ├── SearchPage.tsx         # Search
-│   │   │   ├── FriendPageRQ.tsx       # Friend requests
-│   │   │   ├── MobileFriendPage.tsx   # Friends (mobile)
-│   │   │   └── TermsOfUse.tsx         # Terms of use
-│   │   ├── components/     # UI components
-│   │   │   ├── auth/       # Login, Register, OTP
-│   │   │   ├── chat/       # Chat interface
-│   │   │   ├── comment/    # Comments
-│   │   │   ├── createpost/ # Create post
-│   │   │   ├── feed/       # Feed components
-│   │   │   ├── layout/     # Main layout
-│   │   │   ├── modals/     # Modals
-│   │   │   ├── navigation/ # Navigation bar
+│   │   ├── pages/             # Route-level components
+│   │   │   ├── FeedPage.tsx
+│   │   │   ├── CreatePostPage.tsx
+│   │   │   ├── PostDetailPage.tsx
+│   │   │   ├── ProfilePage.tsx
+│   │   │   ├── EditProfilePage.tsx
+│   │   │   ├── StoriesPage.tsx
+│   │   │   ├── MessagesPage.tsx
+│   │   │   ├── NotificationsPage.tsx
+│   │   │   ├── SearchPage.tsx
+│   │   │   ├── FriendPageRQ.tsx
+│   │   │   ├── MobileFriendPage.tsx
+│   │   │   └── TermsOfUse.tsx
+│   │   ├── components/        # Reusable UI components
+│   │   │   ├── auth/          # Login, Register, OTP
+│   │   │   ├── chat/          # Chat interface
+│   │   │   ├── comment/       # Comments
+│   │   │   ├── createpost/    # Post creation
+│   │   │   ├── feed/          # Feed components
+│   │   │   ├── layout/        # Layout shell
+│   │   │   ├── modals/        # Modal dialogs
+│   │   │   ├── navigation/    # Navigation bar
 │   │   │   ├── notifications/ # Notification components
-│   │   │   ├── posts/      # Post components
-│   │   │   ├── profile/    # Profile components
-│   │   │   ├── search/     # Search components
-│   │   │   ├── story/      # Story components
-│   │   │   └── ui/         # shadcn/ui components
-│   │   ├── contexts/       # React Contexts
-│   │   ├── hooks/          # Custom hooks
-│   │   ├── services/       # API services
-│   │   ├── store/          # Zustand stores
-│   │   ├── locales/        # i18n translations
-│   │   └── utils/          # Utility functions
+│   │   │   ├── posts/         # Post components
+│   │   │   ├── profile/       # Profile components
+│   │   │   ├── search/        # Search components
+│   │   │   ├── story/         # Story components
+│   │   │   └── ui/            # shadcn/ui primitives
+│   │   ├── contexts/          # React Context providers
+│   │   ├── hooks/             # Custom React hooks
+│   │   ├── services/          # API service layer
+│   │   ├── store/             # Zustand stores
+│   │   ├── locales/           # i18n translations
+│   │   └── utils/             # Utility functions
 │   ├── package.json
 │   ├── vite.config.ts
 │   ├── tailwind.config.js
 │   └── tsconfig.json
 │
-├── pyBackend/              # Python Backend (FastAPI)
-│   ├── main.py            # Entry point, FastAPI app
-│   ├── config.py          # Configuration and environment variables
-│   ├── requirements.txt   # Python dependencies
-│   ├── Dockerfile         # Docker config
-│   ├── docker-compose.yml # Docker Compose
+├── pyBackend/                  # Python AI/Automation Service
+│   ├── main.py                # FastAPI application entry
+│   ├── config.py              # Configuration management
+│   ├── requirements.txt       # Python dependencies
+│   ├── Dockerfile             # Container config
+│   ├── docker-compose.yml     # Service orchestration
 │   ├── routers/
-│   │   └── bot_router.py  # Bot API endpoints
+│   │   └── bot_router.py      # Bot API endpoints
 │   ├── services/
-│   │   ├── unsplash_service.py  # Unsplash API integration
-│   │   └── bot_service.py       # Marcin bot automation
-│   └── data/              # Data storage
+│   │   ├── unsplash_service.py # Unsplash API integration
+│   │   └── bot_service.py      # Marcin bot automation
+│   └── data/                  # Data storage
 │
-└── README.md
+├── docs/                      # Documentation
+│   ├── CONTRIBUTING.md
+│   ├── DEPLOYMENT.md
+│   └── SECURITY.md
+│
+├── Screenshots/               # UI screenshots
+├── docker-compose.yml         # Multi-service orchestration
+├── LICENSE                    # MIT License
+└── README.md                  # This file
 ```
+
+---
 
 ## Core Features
 
 ### Social Media Core
-- **Registration / Login** - JWT authentication, OTP verification
-- **Posts** - Create, edit, delete, like, comment, share
-- **Stories** - Temporary images/videos (24h), auto archive
-- **User Profiles** - View and edit personal information
-- **Follow / Friends** - Follow system, friend requests
-- **Real-time Chat** - Instant messaging via Socket.IO
-- **Notifications** - Real-time notifications (like, comment, follow, message)
-- **Search** - Search users and posts
-- **Discovery** - Friend suggestions
+- **Authentication & Authorization** — JWT-based auth with OTP verification flow
+- **Posts** — Full CRUD with likes, comments, and sharing
+- **Stories** — Ephemeral content (24h TTL) with auto-archiving
+- **User Profiles** — Editable profiles with avatar and cover images
+- **Social Graph** — Follow system with friend request workflow
+- **Real-time Chat** — Instant messaging via Socket.IO with typing indicators
+- **Notifications** — Real-time alerts for engagement events
+- **Search** — Full-text search across users and posts
+- **Discovery** — Algorithmic friend suggestions
 
 ### Advanced Features
-- **Media Upload** - Image and video support with Cloudinary
-- **Image Processing** - Sharp image processing, resize, optimize
-- **Push Notifications** - Web Push API
-- **Internationalization** - i18n support
-- **PWA** - Progressive Web App, installable
-- **Responsive Design** - Optimized for mobile and desktop
-- **Rate Limiting** - API protection from abuse
-- **Real-time Updates** - Socket.IO for live data
+- **Media Pipeline** — Image/video upload with Cloudinary CDN + Sharp processing
+- **Push Notifications** — Web Push API integration
+- **Internationalization** — Multi-language support via i18next
+- **PWA** — Installable with offline capabilities
+- **Responsive Design** — Mobile-first, optimized for all viewports
+- **Rate Limiting** — API protection against abuse
+- **Real-time Updates** — Live feed updates via WebSockets
 
 ### AI & Automation (Python Backend)
-- **Marcin Bot** - Social media interaction automation
-- **Unsplash Integration** - High-quality images from Unsplash
-- **Scheduled Tasks** - Auto post, scheduled interactions
-- **Keep-alive Service** - Keep server active on Render
+- **Marcin Bot** — Automated social interactions (likes, follows, comments)
+- **Unsplash Integration** — Curated high-quality image sourcing
+- **Scheduled Tasks** — Automated posting and interactions
+- **Keep-alive Service** — Prevents cold starts on Render
 
-## Installation and Setup
+---
 
-### Requirements
-- Node.js >= 20.x
-- Python >= 3.9
-- MongoDB
-- Cloudinary account
-- Unsplash API key
+## Getting Started
 
-### 1. Clone repository
+### Prerequisites
+
+- **Node.js** >= 20.x
+- **Python** >= 3.9
+- **MongoDB** (local or Atlas)
+- **Cloudinary** account
+- **Unsplash API** key (optional)
+
+### Installation
+
+**1. Clone the repository**
 ```bash
 git clone https://github.com/AbdolHamidDev/HooksDream.git
 cd HooksDream
 ```
 
-### 2. Install Backend (Node.js)
+**2. Start with Docker (Recommended)**
+```bash
+docker-compose up -d
+```
+
+**3. Or manual setup:**
+
+#### Backend (Node.js)
 ```bash
 cd backend
 npm install
-```
 
-Create `.env` file:
-```env
-MONGODB_URI=your_mongodb_uri
-JWT_SECRET=your_jwt_secret
-CLOUDINARY_URL=cloudinary://your_cloudinary_url
-PORT=5000
-NODE_ENV=development
-```
+# Configure environment
+cp .env.example .env
+# Edit .env with your MongoDB URI, JWT secret, and Cloudinary credentials
 
-Run backend:
-```bash
+# Start development server
 npm run dev
 ```
 
-### 3. Install Frontend (React)
+#### Frontend (React)
 ```bash
 cd frontend
 npm install
-```
 
-Create `.env` file:
-```env
-VITE_API_URL=http://localhost:5000/api
-VITE_SOCKET_URL=http://localhost:5000
-```
+# Configure environment
+cp .env.example .env
+# Set VITE_API_URL and VITE_SOCKET_URL
 
-Run frontend:
-```bash
+# Start development server
 npm run dev
 ```
 
-### 4. Install Python Backend
+#### Python Backend
 ```bash
 cd pyBackend
 python -m venv venv
-source venv/bin/activate  # Windows: venv\Scripts\activate
+
+# Activate virtual environment
+# Windows:
+venv\Scripts\activate
+# macOS/Linux:
+source venv/bin/activate
+
 pip install -r requirements.txt
-```
 
-Create `.env` file:
-```env
-NODE_BACKEND_URL=http://localhost:5000
-UNSPLASH_ACCESS_KEY=your_unsplash_key
-BOT_ENABLED=true
-ENVIRONMENT=development
-```
+# Configure environment
+cp .env.example .env
 
-Run Python backend:
-```bash
+# Start server
 python run.py
 # or
 uvicorn main:app --reload
 ```
 
-## API Endpoints
+---
+
+## API Reference
 
 ### Authentication
-- `POST /api/auth/register` - Register
-- `POST /api/auth/login` - Login
-- `POST /api/auth/verify-otp` - OTP verification
-- `GET /api/auth/me` - Get current user info
+| Method | Endpoint | Description |
+|--------|----------|-------------|
+| POST | `/api/auth/register` | User registration |
+| POST | `/api/auth/login` | User login |
+| POST | `/api/auth/verify-otp` | OTP verification |
+| GET | `/api/auth/me` | Get current user |
 
 ### Users
-- `GET /api/users/:id` - Get user info
-- `PUT /api/users/:id` - Update user info
-- `GET /api/users/:id/posts` - Get user posts
+| Method | Endpoint | Description |
+|--------|----------|-------------|
+| GET | `/api/users/:id` | Get user profile |
+| PUT | `/api/users/:id` | Update user profile |
+| GET | `/api/users/:id/posts` | Get user posts |
 
 ### Posts
-- `GET /api/posts` - Get post feed
-- `POST /api/posts` - Create new post
-- `PUT /api/posts/:id` - Edit post
-- `DELETE /api/posts/:id` - Delete post
-- `POST /api/posts/:id/like` - Like post
+| Method | Endpoint | Description |
+|--------|----------|-------------|
+| GET | `/api/posts` | Get feed |
+| POST | `/api/posts` | Create post |
+| PUT | `/api/posts/:id` | Update post |
+| DELETE | `/api/posts/:id` | Delete post |
+| POST | `/api/posts/:id/like` | Like/unlike post |
 
 ### Comments
-- `GET /api/comments/:postId` - Get comments
-- `POST /api/comments` - Add comment
-- `DELETE /api/comments/:id` - Delete comment
+| Method | Endpoint | Description |
+|--------|----------|-------------|
+| GET | `/api/comments/:postId` | Get comments |
+| POST | `/api/comments` | Add comment |
+| DELETE | `/api/comments/:id` | Delete comment |
 
 ### Chat
-- `GET /api/chat/conversations` - Get conversation list
-- `GET /api/chat/messages/:userId` - Get messages
-- `POST /api/chat/send` - Send message
+| Method | Endpoint | Description |
+|--------|----------|-------------|
+| GET | `/api/chat/conversations` | Get conversations |
+| GET | `/api/chat/messages/:userId` | Get messages |
+| POST | `/api/chat/send` | Send message |
 
 ### Stories
-- `GET /api/stories` - Get active stories
-- `POST /api/stories` - Create new story
-- `DELETE /api/stories/:id` - Delete story
+| Method | Endpoint | Description |
+|--------|----------|-------------|
+| GET | `/api/stories` | Get active stories |
+| POST | `/api/stories` | Create story |
+| DELETE | `/api/stories/:id` | Delete story |
 
 ### Notifications
-- `GET /api/notifications` - Get notifications
-- `PUT /api/notifications/:id/read` - Mark as read
+| Method | Endpoint | Description |
+|--------|----------|-------------|
+| GET | `/api/notifications` | Get notifications |
+| PUT | `/api/notifications/:id/read` | Mark as read |
 
 ### Search
-- `GET /api/search/users` - Search users
-- `GET /api/search/posts` - Search posts
+| Method | Endpoint | Description |
+|--------|----------|-------------|
+| GET | `/api/search/users` | Search users |
+| GET | `/api/search/posts` | Search posts |
 
 ### Bot (Python Backend)
-- `POST /api/bot/automate` - Run bot automation
-- `GET /api/bot/status` - Check bot status
-- `POST /api/bot/schedule` - Schedule post
+| Method | Endpoint | Description |
+|--------|----------|-------------|
+| POST | `/api/bot/automate` | Run automation |
+| GET | `/api/bot/status` | Bot status |
+| POST | `/api/bot/schedule` | Schedule task |
+
+---
 
 ## Socket.IO Events
 
 ### Client → Server
-- `join` - Join chat room
-- `sendMessage` - Send message
-- `typing` - Typing indicator
-- `markAsRead` - Mark as read
+- `join` — Join chat room
+- `sendMessage` — Send message
+- `typing` — Typing indicator
+- `markAsRead` — Mark messages as read
 
 ### Server → Client
-- `newMessage` - New message
-- `userTyping` - User typing
-- `newNotification` - New notification
-- `onlineUsers` - Online users list
+- `newMessage` — New message received
+- `userTyping` — User typing status
+- `newNotification` — New notification
+- `onlineUsers` — Online users list
 
-## Useful Scripts
+---
 
-### Backend
+## Development
+
+### Scripts
+
+**Backend:**
 ```bash
-npm start          # Run production
-npm run dev        # Run development with nodemon
-npm test           # Run tests
+npm start          # Production server
+npm run dev        # Development with nodemon
+npm test           # Run test suite
 ```
 
-### Frontend
+**Frontend:**
 ```bash
-npm run dev        # Development server
-npm run build      # Build production
+npm run dev        # Development server (Vite)
+npm run build      # Production build
 npm run preview    # Preview production build
 npm run lint       # ESLint check
 ```
 
-### Python Backend
+**Python Backend:**
 ```bash
-python run.py      # Run server
+python run.py      # Production server
 uvicorn main:app --reload  # Development with auto-reload
 ```
 
-## Deployment
+### Environment Variables
 
-### Render (Backend)
-- Node.js backend: Deploy from `backend/` directory
-- Python backend: Deploy from `pyBackend/` directory
-- Use `Dockerfile` or Render Nixpacks
-
-### Vercel / Netlify (Frontend)
-- Build command: `npm run build`
-- Output directory: `dist`
-- Configure environment variables for API URLs
-
-## Environment Variables
-
-### Backend (.env)
+#### Backend
 | Variable | Description | Required |
 |----------|-------------|----------|
 | `MONGODB_URI` | MongoDB connection string | Yes |
 | `JWT_SECRET` | JWT signing secret | Yes |
 | `CLOUDINARY_URL` | Cloudinary configuration | Yes |
 | `PORT` | Server port | No (default: 5000) |
-| `NODE_ENV` | Environment (development/production) | No |
+| `NODE_ENV` | Environment | No |
 
-### Frontend (.env)
+#### Frontend
 | Variable | Description | Required |
 |----------|-------------|----------|
 | `VITE_API_URL` | Backend API URL | Yes |
 | `VITE_SOCKET_URL` | Socket.IO server URL | Yes |
 
-### Python Backend (.env)
+#### Python Backend
 | Variable | Description | Required |
 |----------|-------------|----------|
 | `NODE_BACKEND_URL` | Node.js backend URL | Yes |
@@ -483,192 +467,89 @@ uvicorn main:app --reload  # Development with auto-reload
 | `BOT_ENABLED` | Enable/disable bot | No |
 | `ENVIRONMENT` | Environment | No |
 
+---
+
+## Deployment
+
+### Render (Backend Services)
+- **Node.js Backend**: Deploy from `backend/` directory
+- **Python Backend**: Deploy from `pyBackend/` directory
+- Use provided `Dockerfile` or Render Nixpacks
+
+### Vercel (Frontend)
+- Build command: `npm run build`
+- Output directory: `dist`
+- Configure environment variables for production API URLs
+
+### MongoDB Atlas
+- Create cluster and update `MONGODB_URI` in backend environment
+- Enable IP whitelist for production
+
+---
+
 ## Contributing
 
-Contributions are what make the open source community such an amazing place to learn, inspire, and create. Any contributions you make are **greatly appreciated**.
+Contributions are welcome. Please follow these guidelines:
 
-### How to Contribute
+1. **Fork** the repository
+2. **Create** a feature branch (`git checkout -b feature/your-feature`)
+3. **Commit** your changes (`git commit -m 'feat: add feature'`)
+4. **Push** to the branch (`git push origin feature/your-feature`)
+5. **Open** a Pull Request
 
-1. **Fork the Project**
-2. **Create your Feature Branch** (`git checkout -b feature/AmazingFeature`)
-3. **Commit your Changes** (`git commit -m 'Add some AmazingFeature'`)
-4. **Push to the Branch** (`git push origin feature/AmazingFeature`)
-5. **Open a Pull Request**
+**Guidelines:**
+- Follow existing code style and conventions
+- Write clear, descriptive commit messages (Conventional Commits)
+- Update documentation for new features
+- Add tests for critical functionality
+- Ensure all checks pass before submitting
 
-### Contribution Guidelines
+See [CONTRIBUTING.md](docs/CONTRIBUTING.md) for detailed guidelines.
 
-- Ensure your code follows the existing code style
-- Write clear commit messages
-- Update documentation if needed
-- Add tests for new features
-- Be respectful and inclusive in discussions
-
-Please check out our [Contributing Guidelines](docs/CONTRIBUTING.md) for more details.
-
-## Code of Conduct
-
-By participating in this project, you agree to maintain a respectful and inclusive environment. Please read our [Code of Conduct](docs/CODE_OF_CONDUCT.md) before contributing.
-
-## Security
-
-We take security seriously. If you discover a security vulnerability, please follow our [Security Policy](docs/SECURITY.md) to report it responsibly.
-
-## License
-
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
-
-```
-MIT License
-
-Copyright (c) 2025-2026 HooksDream
-
-Permission is hereby granted, free of charge, to any person obtaining a copy
-of this software and associated documentation files (the "Software"), to deal
-in the Software without restriction, including without limitation the rights
-to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-copies of the Software, and to permit persons to whom the Software is
-furnished to do so, subject to the following conditions:
-
-The above copyright notice and this permission notice shall be included in all
-copies or substantial portions of the Software.
-
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-SOFTWARE.
-```
-
-## Acknowledgments
-
-- [React](https://reactjs.org/) - UI library
-- [Express.js](https://expressjs.com/) - Backend framework
-- [FastAPI](https://fastapi.tiangolo.com/) - Python API framework
-- [MongoDB](https://www.mongodb.com/) - Database
-- [Socket.IO](https://socket.io/) - Real-time communication
-- [Tailwind CSS](https://tailwindcss.com/) - CSS framework
-- [shadcn/ui](https://ui.shadcn.com/) - UI components
-- [Cloudinary](https://cloudinary.com/) - Media management
-- [Unsplash](https://unsplash.com/) - High-quality images
-
-## Frequently Asked Questions (FAQ)
-
-### What is HooksDream?
-HooksDream is a modern, open-source social media platform built with microservices architecture. It includes a React frontend, Node.js backend, and Python backend for AI automation.
-
-### What technologies does HooksDream use?
-HooksDream uses:
-- **Frontend**: React 18, TypeScript, Vite, Tailwind CSS, shadcn/ui
-- **Backend**: Node.js, Express, MongoDB, Socket.IO
-- **Python**: FastAPI for AI automation and bot services
-- **DevOps**: Docker, Render, Vercel
-
-### Is HooksDream free to use?
-Yes! HooksDream is completely free and open-source under the MIT License. You can use it for personal or commercial projects.
-
-### How do I install HooksDream?
-See the [Installation Guide](#installation-and-setup) for detailed instructions. Quick start:
-```bash
-git clone https://github.com/AbdolHamidDev/HooksDream.git
-cd HooksDream
-docker-compose up -d
-```
-
-### Can I contribute to HooksDream?
-Absolutely! We welcome contributions. Please read [CONTRIBUTING.md](CONTRIBUTING.md) to get started.
-
-### Does HooksDream have real-time features?
-Yes! HooksDream includes real-time chat, notifications, and live updates using Socket.IO.
-
-### What AI features does HooksDream have?
-HooksDream includes a Python backend with:
-- Marcin Bot for social media automation
-- Unsplash integration for high-quality images
-- Scheduled tasks for auto-posting
-- Keep-alive service for Render deployment
-
-### How do I deploy HooksDream?
-HooksDream can be deployed on:
-- **Frontend**: Vercel or Netlify
-- **Backend**: Render
-- **Database**: MongoDB Atlas
-See [docs/RENDER_DEPLOYMENT.md](docs/RENDER_DEPLOYMENT.md) for deployment guides.
-
-## Why Choose HooksDream?
-
-### vs. Building from Scratch
-- ✅ Full-featured social media platform
-- ✅ Production-ready code
-- ✅ Comprehensive documentation
-- ✅ Active maintenance
-- ✅ Community support
-
-### vs. Other Open Source Social Media
-- ✅ Modern tech stack (React 18, TypeScript, Node.js 20)
-- ✅ Microservices architecture
-- ✅ AI/automation features
-- ✅ Real-time chat and notifications
-- ✅ Stories functionality
-- ✅ PWA support
-- ✅ Beautiful UI with Tailwind CSS
-
-### Key Advantages
-1. **Modern Stack**: Latest versions of React, Node.js, Python
-2. **Production Ready**: Deployed on Render, Vercel
-3. **Well Documented**: Comprehensive guides and API docs
-4. **Active Development**: Regular updates and improvements
-5. **Community Driven**: Open to contributions
-6. **AI Powered**: Unique automation features
+---
 
 ## Roadmap
 
-- [x] Core social media features
+- [x] Core social media features (posts, comments, likes)
 - [x] Real-time chat and notifications
-- [x] Stories functionality
-- [x] Python backend for automation
+- [x] Stories functionality with auto-archive
+- [x] Python backend for AI automation
+- [x] PWA support
+- [x] Docker containerization
 - [ ] Dark mode
-- [ ] Video calls
+- [ ] Video calls (WebRTC)
 - [ ] Group chat
 - [ ] Post scheduling
-- [ ] Advanced analytics
+- [ ] Advanced analytics dashboard
 - [ ] Content moderation AI
 - [ ] Mobile apps (React Native)
-- [ ] API documentation (Swagger/OpenAPI)
-- [ ] GraphQL API
+- [ ] GraphQL API layer
+- [ ] Comprehensive test coverage
+
+---
+
+## License
+
+This project is licensed under the MIT License. See [LICENSE](LICENSE) for details.
+
+---
 
 ## Support
 
-If you like this project, please give it a ⭐️ on GitHub!
+If you find this project useful, please consider:
 
-- **Star** this repository if you find it useful
-- **Fork** the project and submit pull requests
-- **Report bugs** or **request features** via [Issues](https://github.com/AbdolHamidDev/HooksDream/issues)
-- **Share** the project with others
-
-## Contact
-
-**AbdolHamidDev**
-
-- 🌐 Portfolio: [https://hamid.id.vn](https://hamid.id.vn)
-- 💼 LinkedIn: [www.linkedin.com/in/hamidabdol](https://www.linkedin.com/in/hamidabdol)
-- 📧 Email: [abdolhamid.dev@gmail.com](mailto:abdolhamid.dev@gmail.com)
-- ☕ Buy Me a Coffee: [https://buymeacoffee.com/hamidabdol](https://buymeacoffee.com/hamidabdol)
-
-Project Link: [https://github.com/AbdolHamidDev/HooksDream](https://github.com/AbdolHamidDev/HooksDream)
-
-Live Demo: [https://hooksdream.vercel.app](https://hooksdream.vercel.app)
+- ⭐ **Starring** the repository
+- 🍴 **Forking** and contributing
+- 🐛 **Reporting** bugs via [Issues](https://github.com/AbdolHamidDev/HooksDream/issues)
+- 💬 **Sharing** with the community
 
 ---
 
 <div align="center">
-  <p>Made with ❤️ by <a href="https://hamid.id.vn">AbdolHamidDev</a></p>
+  <p>Built with ❤️ by <a href="https://hamid.id.vn">AbdolHamidDev</a></p>
   <p>
-    <a href="https://github.com/AbdolHamidDev/HooksDream/stargazers">⭐ Star us on GitHub</a>
-    •
-    <a href="https://github.com/AbdolHamidDev/HooksDream/fork">🍴 Fork on GitHub</a>
-    •
-    <a href="https://buymeacoffee.com/hamidabdol">☴ Buy Me a Coffee</a>
+    <a href="https://github.com/AbdolHamidDev/HooksDream">GitHub</a> •
+    <a href="https://hooksdream.vercel.app">Live Demo</a> •
+    <a href="https://buymeacoffee.com/hamidabdol">☕ Buy Me a Coffee</a>
   </p>
 </div>
