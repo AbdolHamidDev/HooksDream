@@ -124,6 +124,18 @@ app.get('/api/jwt-debug', (req, res) => {
   });
 });
 
+// Health check for FastCron
+app.get('/', (req, res) => {
+  res.status(200).send('OK');
+});
+
+app.get('/health', (req, res) => {
+  res.status(200).json({
+    status: 'ok',
+    uptime: process.uptime(),
+  });
+});
+
 // Enhanced health check for Render
 app.get('/api/health', (req, res) => {
   const health = {
