@@ -3,6 +3,12 @@ const jwt = require('jsonwebtoken');
 
 class GoogleAuthService {
     constructor() {
+        // Validate GOOGLE_CLIENT_ID
+        if (!process.env.GOOGLE_CLIENT_ID) {
+            console.error('❌ GOOGLE_CLIENT_ID environment variable is not set!');
+            throw new Error('GOOGLE_CLIENT_ID is required');
+        }
+        
         this.client = new OAuth2Client(process.env.GOOGLE_CLIENT_ID);
         
         // Validate JWT_SECRET
@@ -14,6 +20,7 @@ class GoogleAuthService {
         this.jwtSecret = process.env.JWT_SECRET;
         this.jwtExpiry = process.env.JWT_EXPIRY || '7d';
         
+        console.log('✅ Google Auth Service initialized');
     }
 
     /**

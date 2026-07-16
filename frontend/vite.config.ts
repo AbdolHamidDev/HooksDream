@@ -14,7 +14,7 @@ export default defineConfig(({ mode }) => {
   
   // Allow override via environment variable
   const apiTarget = process.env.VITE_API_URL || (isDev 
-    ? 'http://localhost:8080'  // Match backend PORT in .env.example / typical local .env
+    ? 'http://localhost:5000'  // Match backend PORT (server.js dev mode: 5000)
     : 'https://hooksdream.onrender.com'); // Production backend
   
   console.log(`🔗 API Target: ${apiTarget} (mode: ${mode})`);
@@ -53,9 +53,9 @@ export default defineConfig(({ mode }) => {
               }
             }
           },
-          // API calls - Network First with fallback
+          // API calls - Network First with fallback (both dev and production)
           {
-            urlPattern: /^https:\/\/hooksdream\.fly\.dev\/api\/.*/i,
+            urlPattern: /^https:\/\/hooksdream\.(?:onrender|fly)\.(?:com|dev)\/api\/.*/i,
             handler: 'NetworkFirst',
             options: {
               cacheName: 'api-cache',

@@ -5,14 +5,14 @@ WORKDIR /app
 # Copy package files
 COPY package*.json ./
 
-# Install ALL dependencies (including dev dependencies for nodemon)
+# Install dependencies including dev dependencies
 RUN npm install && npm cache clean --force
 
 # Copy application code
 COPY . .
 
-# Expose the port
-EXPOSE 5000
+# Expose Vite dev server port
+EXPOSE 5173
 
-# Start in development mode with nodemon hot-reload
+# Start in development mode with hot-reload
 CMD ["npm", "run", "dev"]

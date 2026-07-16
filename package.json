@@ -1,0 +1,25 @@
+{
+  "name": "hooksdream",
+  "version": "1.0.0",
+  "description": "HooksDream - Production-grade social media platform",
+  "scripts": {
+    "dev": "concurrently \"npm run dev:backend\" \"npm run dev:frontend\"",
+    "dev:backend": "cd backend && npm run dev",
+    "dev:frontend": "cd frontend && npm run dev",
+    "install:all": "npm install && cd backend && npm install && cd ../frontend && npm install",
+    "start": "docker compose up -d",
+    "stop": "docker compose down"
+  },
+  "keywords": [
+    "social-media",
+    "react",
+    "nodejs",
+    "mongodb",
+    "socket.io"
+  ],
+  "author": "AbdolHamidDev",
+  "license": "MIT",
+  "devDependencies": {
+    "concurrently": "^8.2.2"
+  }
+}

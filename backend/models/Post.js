@@ -148,8 +148,7 @@ const PostSchema = new mongoose.Schema({
     // Archive functionality - soft delete với TTL 30 ngày
     isArchived: {
         type: Boolean,
-        default: false,
-        index: true // Index cho query performance
+        default: false
     },
     archivedAt: {
         type: Date,
@@ -172,27 +171,6 @@ const PostSchema = new mongoose.Schema({
         type: Number,
         default: 0
     },
-    // Bot-generated content
-    isBot: {
-        type: Boolean,
-        default: false,
-        index: true
-    },
-    botMetadata: {
-        createdBy: {
-            type: String, // 'python_bot', 'ai_assistant', etc.
-        },
-        topic: {
-            type: String, // 'nature', 'technology', etc.
-        },
-        photoData: {
-            type: mongoose.Schema.Types.Mixed, // Unsplash photo metadata
-        },
-        createdAt: {
-            type: Date,
-            default: Date.now
-        }
-    },
     createdAt: {
         type: Date,
         default: Date.now
@@ -213,6 +191,7 @@ PostSchema.index({ likeCount: -1 });
 PostSchema.index({ engagementScore: -1 });
 PostSchema.index({ visibility: 1 });
 PostSchema.index({ isDeleted: 1 });
+PostSchema.index({ isArchived: 1 });
 
 // Virtual for post URL
 PostSchema.virtual('postUrl').get(function() {

@@ -14,7 +14,6 @@ class SocketServer {
                     "http://localhost:5173",
                     "https://hooksdream.vercel.app",
                     "https://hooksdream.netlify.app",
-                    "https://bot-hooksdream-production.up.railway.app",
                     "https://just-solace-production.up.railway.app",
                     "https://hooksdream.onrender.com",
                     /^https:\/\/.*\.vercel\.app$/,
@@ -62,7 +61,10 @@ class SocketServer {
                 }
 
                 // Verify JWT token
-                const decoded = jwt.verify(token, process.env.JWT_SECRET || 'your-secret-key');
+                if (!process.env.JWT_SECRET) {
+                    return next(new Error('Authentication error: JWT_SECRET not configured'));
+                }
+                const decoded = jwt.verify(token, process.env.JWT_SECRET);
                 socket.userId = decoded.userId;
                 socket.user = decoded;
                 
@@ -444,7 +446,7 @@ class SocketServer {
         try {
             const updateData = {
                 isOnline,
-                lastSeen: isOnline ? undefined : new Date()
+                lastSeen: new Date() // Always update lastSeen regardless of online/offline
             };
             
             await User.findByIdAndUpdate(userId, updateData);

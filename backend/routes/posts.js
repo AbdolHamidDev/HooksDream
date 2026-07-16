@@ -1,351 +1,57 @@
 const express = require('express');
 const router = express.Router();
-const { authMiddleware, optionalAuth, botAuthMiddleware } = require('../middleware/auth');
+const { authMiddleware, optionalAuth } = require('../middleware/auth');
 
 // Import controllers
 const uploadController = require('../controllers/uploadController');
 const postController = require('../controllers/postController');
-const commentController = require('../controllers/commentController'); // THÊM DÒNG NÀY
+const commentController = require('../controllers/commentController');
 const { getCommentCount, getCommentStats } = require('../controllers/commentController');
 const likeController = require('../controllers/likeController');
 
-// Upload routes with bot-aware middleware
-const botAwareUploadAuth = (req, res, next) => {
-    // Check if this is a bot request
-    if (req.body.isBot === 'true' || req.body.bot_metadata || req.headers['x-bot-user']) {
-        // For bot uploads, set bot username in headers for cloudinary storage
-        const botUsername = req.body.botUsername || req.headers['x-bot-username'];
-        if (botUsername) {
-            req.headers['x-bot-username'] = botUsername;
-        }
-        return next(); // Skip auth for bot requests
-    }
-    // Use normal auth for regular users
-    return authMiddleware(req, res, next);
-};
-
-router.post('/upload-images', botAwareUploadAuth, uploadController.uploadImages);
-router.post('/upload-image', botAwareUploadAuth, uploadController.uploadImage); // Single image upload
-router.post('/upload-video', botAwareUploadAuth, uploadController.uploadVideo);
+// Upload routes
+router.post('/upload-images', authMiddleware, uploadController.uploadImages);
+router.post('/upload-image', authMiddleware, uploadController.uploadImage);
+router.post('/upload-video', authMiddleware, uploadController.uploadVideo);
 
 // Post routes - SPECIFIC ROUTES FIRST, THEN DYNAMIC ROUTES
 router.get('/', optionalAuth, postController.getPosts);
-router.get('/archived', authMiddleware, postController.getArchivedPosts); // MOVED UP
-router.get('/trending', optionalAuth, postController.getTrendingPosts); // MOVED UP
-router.get('/search', optionalAuth, postController.searchPosts); // MOVED UP
-router.get('/user/:userId', optionalAuth, postController.getUserPosts); // MOVED UP
+router.get('/archived', authMiddleware, postController.getArchivedPosts);
+router.get('/trending', optionalAuth, postController.getTrendingPosts);
+router.get('/search', optionalAuth, postController.searchPosts);
+router.get('/user/:userId', optionalAuth, postController.getUserPosts);
 
-// Bot-aware middleware for post creation
-const botAwareAuth = (req, res, next) => {
-    // Check if this is a bot request with userId in body
-    if (req.body.userId && req.body.bot_metadata) {
-        // Skip auth for bot requests, but validate userId exists
-        return next();
-    }
-    // Use normal auth for regular users
-    return authMiddleware(req, res, next);
-};
-
-router.post('/', botAwareAuth, async (req, res, next) => {
+router.post('/', authMiddleware, async (req, res, next) => {
     try {
-        // Call original createPost controller
-        await postController.createPost(req, res, next);
+        await postController.createPost(req, res);
     } catch (error) {
         next(error);
     }
 });
 
-// Dynamic routes with :id parameter - MUST BE AFTER SPECIFIC ROUTES
+// Comment routes - specific before dynamic
+router.get('/:id/comments/count', optionalAuth, getCommentCount);
+router.get('/:id/comments', optionalAuth, commentController.getComments);
+router.post('/:id/comments', authMiddleware, commentController.createComment);
+
+// Like/Unlike routes
+router.post('/:id/like', authMiddleware, likeController.toggleLike);
+
+// Post CRUD routes
 router.get('/:id', optionalAuth, postController.getPost);
 router.put('/:id', authMiddleware, postController.updatePost);
 router.delete('/:id', authMiddleware, postController.deletePost);
 router.patch('/:id/archive', authMiddleware, postController.archivePost);
+router.patch('/:id/restore', authMiddleware, postController.restorePost);
+router.post('/:id/share', authMiddleware, postController.sharePost);
+router.post('/:id/repost', authMiddleware, postController.repostPost);
 router.get('/:id/likes', optionalAuth, postController.getPostLikes);
 
-// Repost route
-router.post('/:id/repost', authMiddleware, postController.repostPost);
-
-// Use the new bot auth middleware
-const botAwareLikeAuth = botAuthMiddleware;
-
-// Like routes with Socket.IO - Multiple endpoints for bot compatibility
-router.post('/:id/like', botAwareLikeAuth, async (req, res, next) => {
-    try {
-        // Call original like controller
-        await likeController.toggleLike(req, res, () => {
-            // After successful like, emit socket event
-            if (global.socketServer && res.locals.likeResult) {
-                const { postId, isLiked, likeCount } = res.locals.likeResult;
-                global.socketServer.emitToPost(postId, 'post:liked', {
-                    postId,
-                    userId: req.userId,
-                    isLiked,
-                    likeCount,
-                    timestamp: new Date().toISOString()
-                });
-                
-                // Also emit to global feed
-                global.socketServer.io.to('feed:global').emit('post:liked', {
-                    postId,
-                    userId: req.userId,
-                    isLiked,
-                    likeCount,
-                    timestamp: new Date().toISOString()
-                });
-            }
-        });
-    } catch (error) {
-        next(error);
-    }
-});
-
-// Alternative like endpoints for bot compatibility
-router.post('/:id/likes', botAwareLikeAuth, async (req, res, next) => {
-    // Redirect to main like endpoint
-    req.url = req.url.replace('/likes', '/like');
-    return router.handle(req, res, next);
-});
-
-router.post('/like/:id', botAwareLikeAuth, async (req, res, next) => {
-    // Redirect to main like endpoint
-    req.params.id = req.params.id;
-    req.url = `/${req.params.id}/like`;
-    return router.handle(req, res, next);
-});
-
-router.post('/toggle-like/:id', botAwareLikeAuth, async (req, res, next) => {
-    // Redirect to main like endpoint
-    req.params.id = req.params.id;
-    req.url = `/${req.params.id}/like`;
-    return router.handle(req, res, next);
-});
-
-// Comment routes
-router.get('/:id/comments', optionalAuth, commentController.getComments);
-router.post('/:id/comments', botAuthMiddleware, commentController.createComment); // Use bot auth middleware
-
-// Comment action routes
-router.post('/:postId/comments/:commentId/like', authMiddleware, async (req, res) => {
-    try {
-        const { commentId, postId } = req.params;
-        
-        const Comment = require('../models/Comment');
-        const comment = await Comment.findOne({
-            _id: commentId,
-            isDeleted: false
-        });
-        
-        if (!comment) {
-            return res.status(404).json({
-                success: false,
-                message: 'Comment not found'
-            });
-        }
-        
-        const isLiked = await comment.toggleLike(req.userId);
-
-        // Emit real-time update via Socket.IO
-        if (global.socketServer) {
-            global.socketServer.emitToPost(postId, 'comment:liked', {
-                commentId,
-                postId,
-                userId: req.userId,
-                isLiked,
-                likeCount: comment.likeCount,
-                timestamp: new Date().toISOString()
-            });
-        }
-        
-        res.json({
-            success: true,
-            message: isLiked ? 'Comment liked' : 'Comment unliked',
-            data: {
-                isLiked,
-                likeCount: comment.likeCount
-            }
-        });
-        
-    } catch (error) {
-        res.status(500).json({
-            success: false,
-            message: 'Internal server error'
-        });
-    }
-});
-
-router.delete('/:postId/comments/:commentId', authMiddleware, async (req, res) => {
-    try {
-        const { commentId } = req.params;
-        
-        const Comment = require('../models/Comment');
-        const comment = await Comment.findOne({
-            _id: commentId,
-            isDeleted: false
-        });
-        
-        if (!comment) {
-            return res.status(404).json({
-                success: false,
-                message: 'Comment not found'
-            });
-        }
-        
-        // Check ownership
-        if (comment.userId.toString() !== req.userId) {
-            return res.status(403).json({
-                success: false,
-                message: 'Access denied'
-            });
-        }
-        
-        // Soft delete
-        await comment.softDelete();
-        
-        res.json({
-            success: true,
-            message: 'Comment deleted successfully'
-        });
-        
-    } catch (error) {
-        res.status(500).json({
-            success: false,
-            message: 'Internal server error'
-        });
-    }
-});
-
-router.put('/:postId/comments/:commentId', authMiddleware, async (req, res) => {
-    try {
-        const { commentId } = req.params;
-        const { content, image } = req.body;
-        
-        if (!content || content.trim().length === 0) {
-            return res.status(400).json({
-                success: false,
-                message: 'Content is required'
-            });
-        }
-        
-        const Comment = require('../models/Comment');
-        const comment = await Comment.findOne({
-            _id: commentId,
-            isDeleted: false
-        });
-        
-        if (!comment) {
-            return res.status(404).json({
-                success: false,
-                message: 'Comment not found'
-            });
-        }
-        
-        // Check ownership
-        if (comment.userId.toString() !== req.userId) {
-            return res.status(403).json({
-                success: false,
-                message: 'Access denied'
-            });
-        }
-        
-        // Update fields
-        comment.content = content.trim();
-        if (image !== undefined) comment.image = image;
-        
-        await comment.save();
-        await comment.populate('userId', 'username displayName avatar isVerified');
-        
-        res.json({
-            success: true,
-            message: 'Comment updated successfully',
-            data: comment
-        });
-        
-    } catch (error) {
-        res.status(500).json({
-            success: false,
-            message: 'Internal server error'
-        });
-    }
-});
-
-router.post('/:postId/comments/:commentId/replies', authMiddleware, async (req, res) => {
-    try {
-        const { postId, commentId } = req.params;
-        const { content, image } = req.body;
-        
-        if (!content || content.trim().length === 0) {
-            return res.status(400).json({
-                success: false,
-                message: 'Content is required'
-            });
-        }
-        
-        const Comment = require('../models/Comment');
-        const Post = require('../models/Post');
-        
-        // Kiểm tra post có tồn tại không
-        const post = await Post.findOne({
-            _id: postId,
-            isDeleted: false
-        });
-        
-        if (!post) {
-            return res.status(404).json({
-                success: false,
-                message: 'Post not found'
-            });
-        }
-        
-        // Kiểm tra parent comment có tồn tại không
-        const parentComment = await Comment.findOne({
-            _id: commentId,
-            isDeleted: false
-        });
-        
-        if (!parentComment) {
-            return res.status(404).json({
-                success: false,
-                message: 'Parent comment not found'
-            });
-        }
-        
-        // Tạo reply
-        const reply = new Comment({
-            postId: postId,
-            userId: req.userId,
-            content: content.trim(),
-            parentCommentId: commentId,
-            image: image || ''
-        });
-        
-        await reply.save();
-        await reply.populate('userId', 'username displayName avatar isVerified');
-        
-        // Cập nhật replyCount của parent comment
-        await Comment.findByIdAndUpdate(commentId, { 
-            $inc: { replyCount: 1 } 
-        });
-        
-        res.status(201).json({
-            success: true,
-            message: 'Reply created successfully',
-            data: reply
-        });
-        
-    } catch (error) {
-        res.status(500).json({
-            success: false,
-            message: 'Internal server error'
-        });
-    }
-});
-
-// Comment count routes
-router.get('/:id/comment-count', optionalAuth, getCommentCount);
-router.get('/:id/comment-stats', optionalAuth, getCommentStats);
-
 // Link preview routes
-router.post('/preview-link', postController.getLinkPreview);
-router.post('/preview-links', postController.getMultipleLinkPreviews);
+router.post('/preview-link', authMiddleware, postController.getLinkPreview);
+router.post('/preview-links', authMiddleware, postController.getMultipleLinkPreviews);
+
+// Comment stats
+router.get('/comments/stats', authMiddleware, getCommentStats);
 
 module.exports = router;

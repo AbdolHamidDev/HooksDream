@@ -28,6 +28,31 @@ app.set('trust proxy', 1);
 // Cloudinary Config - Tự động đọc từ CLOUDINARY_URL trong .env
 cloudinary.config();
 
+// Rate limiting
+const rateLimit = require('express-rate-limit');
+
+// General API rate limiter
+const apiLimiter = rateLimit({
+  windowMs: 60 * 1000, // 1 minute
+  max: 100, // 100 requests per minute
+  message: { success: false, message: 'Too many requests, please try again later.' },
+  standardHeaders: true,
+  legacyHeaders: false,
+});
+
+// Auth endpoints rate limiter (stricter)
+const authLimiter = rateLimit({
+  windowMs: 60 * 1000, // 1 minute
+  max: 10, // 10 requests per minute for auth
+  message: { success: false, message: 'Too many auth attempts, please try again later.' },
+  standardHeaders: true,
+  legacyHeaders: false,
+});
+
+// Apply rate limiting
+app.use('/api/', apiLimiter);
+app.use('/api/auth/', authLimiter);
+
 // Middleware
 app.use(cors({
   origin: function (origin, callback) {
@@ -152,6 +177,9 @@ app.get('/api/health', (req, res) => {
   
   // Return 503 if critical services are down
   if (health.db !== 'connected') {
+    health.status = 'degraded';
+    res.status(503).json(health);
+    return;
   }
   
   res.json(health);
@@ -168,7 +196,6 @@ const chatRoutes = require('./routes/chat');
 const searchRoutes = require('./routes/search');
 const storyRoutes = require('./routes/storyRoutes');
 const friendDiscoveryRoutes = require('./routes/friendDiscovery');
-const botRoutes = require('./routes/botRoutes');
 
 app.use('/api/auth', authRoutes);
 app.use('/api/users', userRoutes);
@@ -180,7 +207,6 @@ app.use('/api/notifications', notificationRoutes);
 app.use('/api/search', searchRoutes);
 app.use('/api/stories', storyRoutes);
 app.use('/api/discovery', friendDiscoveryRoutes);
-app.use('/api/bot', botRoutes);
 // Xử lý lỗi
 app.use((err, req, res, next) => {
   res.status(500).json({ message: 'Something went wrong!' });
@@ -204,16 +230,12 @@ const commentController = require('./controllers/commentController');
 const postController = require('./controllers/postController');
 const notificationController = require('./controllers/notificationController');
 const storyController = require('./controllers/storyController');
-const botController = require('./controllers/botController');
-
 likeController.setSocketServer(socketServer);
 followController.setSocketServer(socketServer);
 commentController.setSocketServer(socketServer);
 postController.setSocketServer(socketServer);
 notificationController.setSocketServer(socketServer);
 storyController.setSocketServer(socketServer);
-botController.setSocketServer(socketServer);
-
 // Khởi động server
 const PORT = process.env.PORT || (process.env.NODE_ENV === 'development' ? 5000 : 8080);
 const HOST = process.env.HOST || '0.0.0.0';

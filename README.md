@@ -276,12 +276,32 @@ git clone https://github.com/AbdolHamidDev/HooksDream.git
 cd HooksDream
 ```
 
-**2. Start with Docker (Recommended)**
+**2. Start with Docker (Recommended)** 🚀
 ```bash
-docker-compose up -d
+# Start all services (MongoDB + Backend + Frontend)
+docker compose up -d
+
+# View logs
+docker compose logs -f
+
+# Access the app
+# Frontend: http://localhost:5173
+# Backend: http://localhost:5000
+# MongoDB: mongodb://localhost:27017
 ```
 
-**3. Or manual setup:**
+See [DOCKER_DEV.md](DOCKER_DEV.md) for detailed Docker setup and troubleshooting.
+
+**3. Or run locally with npm:**
+```bash
+# Install all dependencies
+npm run install:all
+
+# Start both backend and frontend
+npm run dev
+```
+
+**4. Or manual setup:**
 
 #### Backend (Node.js)
 ```bash

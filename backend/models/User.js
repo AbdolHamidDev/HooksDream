@@ -1,4 +1,4 @@
-// User.js - Cập nhật đầy đủ schema
+// User.js - Schema người dùng
 const mongoose = require('mongoose');
 
 const UserSchema = new mongoose.Schema({
@@ -88,25 +88,6 @@ phone: {
         type: Boolean,
         default: false
     },
-    isBot: {
-        type: Boolean,
-        default: false,
-        index: true
-    },
-    botType: {
-        type: String,
-        enum: ['photographer', 'traveler', 'tech', 'lifestyle', 'nature', 'artist'],
-        required: function() { return this.isBot; }
-    },
-    specialBadge: {
-        type: {
-            type: String,
-            enum: ['creator', 'explorer', 'artist', 'influencer', 'innovator', 'expert', 'pioneer']
-        },
-        icon: String,
-        color: String,
-        label: String
-    },
     followerCount: {
         type: Number,
         default: 0
@@ -120,15 +101,6 @@ phone: {
         default: 0
     },
     
-    // Profile customization tracking
-    hasCustomDisplayName: {
-        type: Boolean,
-        default: false
-    },
-    hasCustomAvatar: {
-        type: Boolean,
-        default: false
-    },
     lastLoginAt: {
         type: Date,
         default: Date.now
@@ -159,7 +131,6 @@ phone: {
 });
 
 // Indexes - Only add indexes that are not already unique in schema
-UserSchema.index({ createdAt: -1 });
 UserSchema.index({ isOnline: 1 });
 UserSchema.index({ lastSeen: -1 });
 

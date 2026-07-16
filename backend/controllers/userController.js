@@ -161,9 +161,7 @@ exports.updateProfile = async (req, res) => {
 
                     const optimizedAvatar = await optimizeImage(req.files.avatar[0].buffer, 'avatar');
                 
-                // Determine folder based on user type
-                const isBot = user.isBot;
-                const avatarFolder = isBot ? `bots/${user.username}/avatars` : 'uploads/images';
+                const avatarFolder = 'uploads/images';
                 
                 const newAvatarUrl = await uploadImageToCloudinary(optimizedAvatar, {
                     folder: avatarFolder,
@@ -211,8 +209,7 @@ exports.updateProfile = async (req, res) => {
 
                     const optimizedCover = await optimizeImage(req.files.coverImage[0].buffer, 'cover');
                 
-                // Determine folder based on user type
-                const coverFolder = isBot ? `bots/${user.username}/covers` : 'uploads/images';
+                const coverFolder = 'uploads/images';
                 
                 const newCoverUrl = await uploadImageToCloudinary(optimizedCover, {
                     folder: coverFolder,
@@ -448,50 +445,3 @@ exports.deleteUser = async (req, res) => {
     }
 };
 
-// Get random bot account for automated posting
-exports.getRandomUserForBot = async (req, res) => {
-    try {
-        // Get random bot account (not real users)
-        const randomBot = await User.aggregate([
-            { 
-                $match: { 
-                    isBot: true,  // Only bot accounts
-                    isDeleted: { $ne: true },
-                    $or: [
-                        { isDeleted: { $exists: false } },
-                        { isDeleted: false }
-                    ]
-                } 
-            },
-            { $sample: { size: 1 } }
-        ]);
-        
-        if (randomBot.length === 0) {
-            return res.status(404).json(
-                createResponse(false, 'No bot accounts found for posting', null, null, 404)
-            );
-        }
-        
-        const botUser = randomBot[0];
-        
-        // Return bot account data needed for posting
-        const botUserData = {
-            _id: botUser._id,
-            username: botUser.username,
-            displayName: botUser.displayName,
-            email: botUser.email,
-            avatar: botUser.avatar,
-            botType: botUser.botType,
-            isBot: true,
-            isActive: !botUser.isDeleted
-        };
-        
-        res.json(createResponse(true, 'Random bot account selected for posting', botUserData));
-        
-    } catch (error) {
-        console.error('Error getting random bot account:', error);
-        res.status(500).json(
-            createResponse(false, 'Internal server error', null, null, 500)
-        );
-    }
-};

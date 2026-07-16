@@ -34,9 +34,14 @@ services:
     environment:
       - NODE_ENV=development
       - PORT=5000
+      - HOST=0.0.0.0
       - MONGODB_URI=mongodb://admin:admin123@mongodb:27017/hooksdream?authSource=admin
-      - JWT_SECRET=your_jwt_secret_here_change_in_production
+      - JWT_SECRET=dev_jwt_secret_hooksdream_2024
+      - JWT_EXPIRY=7d
+      - GOOGLE_CLIENT_ID=your_google_client_id_here
+      - GOOGLE_CLIENT_SECRET=your_google_client_secret_here
       - CLOUDINARY_URL=cloudinary://your_cloud_name:your_api_key@your_cloud_name
+      - FRONTEND_URL=http://localhost:5173
     volumes:
       - ./backend:/app
       - /app/node_modules
@@ -46,31 +51,6 @@ services:
     networks:
       - hooksdream-network
     command: npm run dev
-
-  # Python Backend
-  pybackend:
-    build:
-      context: ./pyBackend
-      dockerfile: Dockerfile
-    container_name: hooksdream-pybackend
-    restart: unless-stopped
-    ports:
-      - "8000:8000"
-    environment:
-      - ENVIRONMENT=development
-      - HOST=0.0.0.0
-      - PORT=8000
-      - NODE_BACKEND_URL=http://backend:5000
-      - UNSPLASH_ACCESS_KEY=your_unsplash_access_key_here
-      - BOT_ENABLED=true
-    volumes:
-      - ./pyBackend:/app
-      - /app/__pycache__
-    depends_on:
-      - backend
-    networks:
-      - hooksdream-network
-    command: python run.py
 
   # Frontend
   frontend:
@@ -82,9 +62,9 @@ services:
     ports:
       - "5173:5173"
     environment:
-      - VITE_API_URL=http://localhost:5000/api
-      - VITE_SOCKET_URL=http://localhost:5000
-      - VITE_NODE_ENV=development
+      - VITE_API_URL=http://backend:5000
+      - VITE_API_BASE_URL=
+      - MODE=development
     volumes:
       - ./frontend:/app
       - /app/node_modules
