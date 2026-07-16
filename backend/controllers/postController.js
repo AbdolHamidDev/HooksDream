@@ -1,9 +1,7 @@
-const Post = require('../models/Post');
-const User = require('../models/User');
-const Comment = require('../models/Comment');
-const Notification = require('../models/Notification');
+const PostService = require('../services/postService');
 const { createResponse } = require('../utils/helpers');
 const linkPreviewService = require('../services/linkPreviewService');
+const { validateRequest, createPostSchema, updatePostSchema, getPostsQuerySchema, getUserPostsQuerySchema, searchPostsQuerySchema } = require('../validators/postValidator');
 
 // Get socket server instance for notifications
 let socketServer = null;
@@ -15,82 +13,35 @@ const getNotificationHelper = () => {
     return socketServer?.getNotificationHelper();
 };
 
+// Helper to emit socket events
+const emitSocketEvent = (event, data) => {
+    if (global.socketServer) {
+      global.socketServer.io.to('feed:global').emit(event, data);
+      global.socketServer.io.to(`user:${data.userId}:posts`).emit(event, data);
+    }
+  };
+
 // Lấy danh sách posts (public feed)
 exports.getPosts = async (req, res) => {
     try {
         const { page = 1, limit = 10, sort = 'latest' } = req.query;
         
-        let query = { 
-            isDeleted: false, 
-            $or: [
-                { isArchived: false },
-                { isArchived: { $exists: false } }
-            ],
-            visibility: 'public' 
-        };
-        let sortOption = { createdAt: -1 };
-        
-        switch (sort) {
-            case 'trending':
-                sortOption = { engagementScore: -1, createdAt: -1 };
-                break;
-            case 'popular':
-                sortOption = { likeCount: -1, createdAt: -1 };
-                break;
-            case 'latest':
-            default:
-                sortOption = { createdAt: -1 };
-                break;
-        }
-        
-        const posts = await Post.find(query)
-            .populate('userId', 'username displayName avatar isVerified')
-            .populate('originalPost')
-            .populate({
-                path: 'repost_of',
-                populate: {
-                    path: 'userId',
-                    select: 'username displayName avatar isVerified'
-                }
-            })
-            .sort(sortOption)
-            .limit(limit * 1)
-            .skip((page - 1) * limit)
-            .lean();
-        
-        // ✅ THÊM: Lấy commentCount cho mỗi post
-        const Comment = require('../models/Comment');
-        for (let post of posts) {
-            if (post.commentCount === undefined) {
-                post.commentCount = await Comment.countDocuments({
-                    postId: post._id,
-                    isDeleted: false
-                });
-            }
-        }
+        const result = await PostService.getPosts({
+            page,
+            limit,
+            sort
+        });
         
         // Thêm thông tin user đã like hay chưa
         if (req.userId) {
-            posts.forEach(post => {
+            result.data.forEach(post => {
                 post.isLiked = post.likes.some(like => like.userId === req.userId);
             });
         }
         
-        const total = await Post.countDocuments(query);
-        const currentPage = parseInt(page);
-        const totalPages = Math.ceil(total / limit);
-        
         res.json({
             success: true,
-            data: posts, // ✅ GIỜ ĐÃ CÓ commentCount
-            pagination: {
-                page: currentPage,
-                limit: parseInt(limit),
-                total,
-                pages: totalPages,
-                hasNext: currentPage < totalPages, // ⚡ THÊM hasNext cho frontend
-                hasPrev: currentPage > 1
-            }
+            ...result
         });
         
     } catch (error) {
@@ -104,10 +55,9 @@ exports.getPosts = async (req, res) => {
 // Tạo post mới
 exports.createPost = async (req, res) => {
     try {
-        const { content, images, video, visibility = 'public' } = req.body;
-
+        const validated = req.validated;
         const postUserId = req.userId;
-        
+
         if (!postUserId) {
             return res.status(400).json({
                 success: false,
@@ -115,27 +65,12 @@ exports.createPost = async (req, res) => {
             });
         }
 
-        // Cập nhật validation để hỗ trợ video
-        if ((!content || content.trim().length === 0) && 
-            (!images || images.length === 0) && 
-            (!video || video.trim().length === 0)) {
-            return res.status(400).json({
-                success: false,
-                message: 'Content, image or video is required'
-            });
-        }
-
-        const post = new Post({
-            userId: postUserId,
-            content: content ? content.trim() : '',
-            images: images || [],
-            video: video || '',
-            visibility,
+        const post = await PostService.createPost(postUserId, {
+            content: validated.content,
+            images: validated.images,
+            video: validated.video,
+            visibility: validated.visibility
         });
-
-        await post.save();
-        await post.populate('userId', 'username displayName avatar isVerified');
-        await User.findByIdAndUpdate(postUserId, { $inc: { postCount: 1 } });
 
         // Send notification to followers about new post
         const notificationHelper = getNotificationHelper();
@@ -144,20 +79,11 @@ exports.createPost = async (req, res) => {
         }
 
         // Emit real-time event for new post
-        if (global.socketServer) {
-            const postData = {
-                post: post.toObject(),
-                userId: postUserId,
-                timestamp: new Date().toISOString()
-            };
-            
-            // Broadcast to global feed
-            global.socketServer.io.to('feed:global').emit('post:created', postData);
-            
-            // Broadcast to user's followers
-            global.socketServer.io.to(`user:${postUserId}:posts`).emit('post:created', postData);
-            
-            }
+        emitSocketEvent('post:created', {
+            post: post.toObject(),
+            userId: postUserId,
+            timestamp: new Date().toISOString()
+        });
 
         res.status(201).json({
             success: true,

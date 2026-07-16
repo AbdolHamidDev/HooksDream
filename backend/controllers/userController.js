@@ -1,5 +1,4 @@
-const User = require('../models/User');
-const Follow = require('../models/Follow');
+const UserService = require('../services/userService');
 const { createResponse, validateUsername, generateUniqueUsername } = require('../utils/helpers');
 const { uploadImageToCloudinary, deleteImageFromCloudinary } = require('../utils/cloudinary');
 const { optimizeImage } = require('../utils/imageProcessing');
@@ -7,25 +6,9 @@ const { optimizeImage } = require('../utils/imageProcessing');
 // Lấy thông tin current user profile (từ JWT token)
 exports.getCurrentUserProfile = async (req, res) => {
     try {
-        // req.user được set bởi authMiddleware
         const userId = req.user._id || req.user.googleId;
         
-        const user = await User.findById(userId)
-            .select('-__v')
-            .lean();
-        
-        if (!user) {
-            return res.status(404).json(
-                createResponse(false, 'User not found', null, null, 404)
-            );
-        }
-        
-        // Đây là profile của chính user đó
-        const userProfile = {
-            ...user,
-            isFollowing: false, // Không thể follow chính mình
-            isOwnProfile: true
-        };
+        const userProfile = await UserService.getProfile(userId, userId);
         
         res.json(createResponse(true, 'Current user profile retrieved successfully', userProfile));
         
@@ -40,39 +23,9 @@ exports.getCurrentUserProfile = async (req, res) => {
 exports.getProfile = async (req, res) => {
     try {
         const { userId } = req.params;
+        const currentUserId = req.userId;
         
-        // ✅ SỬA: Sử dụng optionalAuth middleware để có req.userId
-        const currentUserId = req.userId; // Từ optionalAuth middleware
-        
-        
-        const user = await User.findById(userId)
-            .select('-__v')
-            .lean();
-        
-        if (!user) {
-            return res.status(404).json(
-                createResponse(false, 'User not found', null, null, 404)
-            );
-        }
-        
-        // Check if current user is following this user
-        let isFollowing = false;
-        if (currentUserId && currentUserId !== userId) {
-            const Follow = require('../models/Follow'); // ✅ Import Follow model
-            const follow = await Follow.findOne({
-                follower: currentUserId,
-                following: userId
-            });
-            isFollowing = !!follow;
-        }
-        
-        // Thêm isFollowing vào response
-        const userProfile = {
-            ...user,
-            isFollowing,
-            isOwnProfile: currentUserId === userId
-        };
-        
+        const userProfile = await UserService.getProfile(userId, currentUserId);
         
         res.json(createResponse(true, 'User profile retrieved successfully', userProfile));
         

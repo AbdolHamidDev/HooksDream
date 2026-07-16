@@ -2,10 +2,9 @@
 // Optimized for mobile-first UX, accessibility, and performance
 
 import React, { useEffect, useRef, useState } from 'react';
-import { useModernGoogleAuth, AuthState, AuthErrorType } from '@/hooks/useModernGoogleAuth';
-import { useGoogleAuthFallback } from '@/hooks/useGoogleAuthFallback';
+import { useAuth, AuthState, AuthErrorType } from '@/hooks/useAuth';
 import { Button } from '@/components/ui/Button';
-import { Loader2, AlertCircle, RefreshCw, CheckCircle2, Shield, ExternalLink } from 'lucide-react';
+import { Loader2, AlertCircle, RefreshCw, CheckCircle2, Shield } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
 interface ModernGoogleLoginProps {
@@ -32,13 +31,10 @@ const ModernGoogleLogin: React.FC<ModernGoogleLoginProps> = ({
     isLoading, 
     isConnected, 
     error, 
-    progress, 
     login, 
     retry, 
     clearError 
-  } = useModernGoogleAuth();
-  
-  const fallbackAuth = useGoogleAuthFallback();
+  } = useAuth();
   
   const buttonRef = useRef<HTMLDivElement>(null);
   const [isHovered, setIsHovered] = useState(false);
@@ -102,23 +98,13 @@ const ModernGoogleLogin: React.FC<ModernGoogleLoginProps> = ({
     minimal: 'bg-transparent hover:bg-gray-100 text-gray-700 border-0'
   };
 
-  // Handle manual login trigger with fallback
+  // Handle manual login trigger
   const handleLogin = async () => {
     try {
       clearError();
-      
-      // Try modern auth first
-      if (window.google?.accounts?.id) {
-        await login();
-      } else {
-        // Fallback to redirect-based auth
-        console.log('Using fallback redirect authentication');
-        fallbackAuth.loginWithRedirect();
-      }
+      await login();
     } catch (error) {
-      console.error('Login failed, trying fallback:', error);
-      // If modern auth fails, try fallback
-      fallbackAuth.loginWithRedirect();
+      console.error('Login failed:', error);
     }
   };
 
@@ -150,18 +136,9 @@ const ModernGoogleLogin: React.FC<ModernGoogleLoginProps> = ({
         >
           <div className="flex items-center justify-center space-x-2">
             <Loader2 className="w-4 h-4 animate-spin" />
-            <span>{progress.message}</span>
+            <span>Loading...</span>
           </div>
         </Button>
-        
-        {showProgress && (
-          <div className="w-full bg-gray-200 rounded-full h-1.5 overflow-hidden">
-            <div 
-              className="bg-blue-500 h-full rounded-full transition-all duration-300 ease-out"
-              style={{ width: `${progress.progress}%` }}
-            />
-          </div>
-        )}
       </div>
     );
   }
@@ -289,11 +266,6 @@ const ModernGoogleLogin: React.FC<ModernGoogleLoginProps> = ({
             </svg>
             
             <span className="font-medium">Continue with Google</span>
-            
-            {/* External link indicator for redirect */}
-            {!window.google?.accounts?.id && (
-              <ExternalLink className="w-4 h-4 text-gray-400 group-hover:text-gray-500" />
-            )}
             
             {/* Security indicator */}
             {window.google?.accounts?.id && (

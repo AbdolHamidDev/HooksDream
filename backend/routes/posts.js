@@ -9,19 +9,22 @@ const commentController = require('../controllers/commentController');
 const { getCommentCount, getCommentStats } = require('../controllers/commentController');
 const likeController = require('../controllers/likeController');
 
+// Import validators
+const { validateRequest, createPostSchema, updatePostSchema, getPostsQuerySchema, getUserPostsQuerySchema, searchPostsQuerySchema } = require('../validators/postValidator');
+
 // Upload routes
 router.post('/upload-images', authMiddleware, uploadController.uploadImages);
 router.post('/upload-image', authMiddleware, uploadController.uploadImage);
 router.post('/upload-video', authMiddleware, uploadController.uploadVideo);
 
 // Post routes - SPECIFIC ROUTES FIRST, THEN DYNAMIC ROUTES
-router.get('/', optionalAuth, postController.getPosts);
+router.get('/', optionalAuth, validateRequest(getPostsQuerySchema), postController.getPosts);
 router.get('/archived', authMiddleware, postController.getArchivedPosts);
 router.get('/trending', optionalAuth, postController.getTrendingPosts);
-router.get('/search', optionalAuth, postController.searchPosts);
-router.get('/user/:userId', optionalAuth, postController.getUserPosts);
+router.get('/search', optionalAuth, validateRequest(searchPostsQuerySchema), postController.searchPosts);
+router.get('/user/:userId', optionalAuth, validateRequest(getUserPostsQuerySchema), postController.getUserPosts);
 
-router.post('/', authMiddleware, async (req, res, next) => {
+router.post('/', authMiddleware, validateRequest(createPostSchema), async (req, res, next) => {
     try {
         await postController.createPost(req, res);
     } catch (error) {
@@ -39,7 +42,7 @@ router.post('/:id/like', authMiddleware, likeController.toggleLike);
 
 // Post CRUD routes
 router.get('/:id', optionalAuth, postController.getPost);
-router.put('/:id', authMiddleware, postController.updatePost);
+router.put('/:id', authMiddleware, validateRequest(updatePostSchema), postController.updatePost);
 router.delete('/:id', authMiddleware, postController.deletePost);
 router.patch('/:id/archive', authMiddleware, postController.archivePost);
 router.patch('/:id/restore', authMiddleware, postController.restorePost);

@@ -9,9 +9,11 @@ import { useNavigate } from 'react-router-dom';
 import { cn } from '@/lib/utils';
 import SimpleGoogleLogin from './SimpleGoogleLogin';
 import { SessionManager } from '@/utils/sessionManager';
+import { useAuth } from '@/hooks/useAuth';
 
 export const ModernAuthConnect: React.FC = () => {
   const { isConnected, setIsConnected, setUser, setProfile } = useAppStore();
+  const { isInitialized } = useAuth();
   const { t, i18n } = useTranslation("common");
   const [isOpen, setIsOpen] = useState(false);
   const [agreeTerms, setAgreeTerms] = useState(false);
@@ -42,8 +44,11 @@ export const ModernAuthConnect: React.FC = () => {
       setIsCheckingSession(false);
     };
     
-    checkSession();
-  }, [navigate, setUser, setProfile, setIsConnected]);
+    // Only check session after auth is initialized
+    if (isInitialized) {
+      checkSession();
+    }
+  }, [navigate, setUser, setProfile, setIsConnected, isInitialized]);
 
   // Auto redirect when connected
   useEffect(() => {
@@ -184,8 +189,8 @@ export const ModernAuthConnect: React.FC = () => {
     </div>
   );
 
-  // Show loading while checking session
-  if (isCheckingSession) {
+  // Show loading while checking session or initializing auth
+  if (isCheckingSession || !isInitialized) {
     return (
       <div className="min-h-screen bg-background flex items-center justify-center px-4 py-8">
         <div className="text-center space-y-4">
@@ -198,7 +203,7 @@ export const ModernAuthConnect: React.FC = () => {
           </div>
           <div className="flex items-center justify-center space-x-2">
             <Loader2 className="w-5 h-5 animate-spin text-foreground" />
-            <span className="text-foreground">Checking session...</span>
+            <span className="text-foreground">Loading...</span>
           </div>
         </div>
       </div>

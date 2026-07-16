@@ -197,7 +197,7 @@ const apiFormDataCall = async (endpoint: string, formData: FormData, method: str
 };
 
 // Login debouncing
-let loginDebounceTimer: NodeJS.Timeout | null = null;
+let loginDebounceTimer: ReturnType<typeof setTimeout> | null = null;
 const debouncedLogin = (loginFn: () => Promise<any>, delay = 2000): Promise<any> => {
   return new Promise((resolve, reject) => {
     if (loginDebounceTimer) {
@@ -255,6 +255,10 @@ const resizeImage = (file: File, maxWidth: number = 800, maxHeight: number = 800
     img.src = URL.createObjectURL(file);
   });
 };
+
+// Export utilities for use in other API files
+export { apiCall, apiFormDataCall, getAuthHeaders, getAuthHeadersForFormData, debouncedLogin, resizeImage };
+export { IMAGE_MIME_TYPES, VIDEO_MIME_TYPES, RATE_LIMIT_CONFIG };
 
 // User API
 export const userApi = {

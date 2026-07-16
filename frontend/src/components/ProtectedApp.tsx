@@ -1,20 +1,15 @@
 // ProtectedApp.tsx - Enhanced with Framer Motion transitions
-import React, { Suspense, useState, useEffect, startTransition } from 'react';
+import React, { Suspense, useState, useEffect } from 'react';
 import { Routes, Route, useNavigate, useLocation } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useAppStore } from "@/store/useAppStore";
 import { useSocket } from "@/hooks/useSocket";
 import ModernAuthConnect from "@/components/auth/ModernAuthConnect";
-import { Header } from "@/components/layout/Header";
-import { BottomNav } from "@/components/layout/BottomNav";
-import { MobileHeader } from "@/components/layout/MobileHeader";
-import SidebarLeft from "@/components/layout/SidebarLeft";
-import { SidebarRight } from "@/components/layout/SidebarRight";
+import { PageLayout } from "@/components/layout/PageLayout";
 import { useChatContext } from "@/contexts/ChatContext";
 import { UnfollowConfirmProvider } from "@/contexts/UnfollowConfirmContext";
 import { ChatProvider } from "@/contexts/ChatContext";
 import { ToastProvider } from "@/components/ui/SuccessToast";
-import { TooltipProvider } from "@radix-ui/react-tooltip";
 // Lazy load ALL components for better performance and faster navigation
 const AnimatedRoutes = React.lazy(() => import("@/components/navigation/AnimatedRoutes"));
 const SearchPage = React.lazy(() => import("@/pages/SearchPage"));
@@ -79,6 +74,9 @@ const ProtectedAppContent: React.FC = () => {
   // MobileHeader only shows on feed (hide on messages, search, etc.)
   const shouldShowMobileHeader = (location.pathname === '/feed' || location.pathname === '/') && !isSearchPage && !isMessagesPage;
 
+  // Determine layout mode
+  const isFullWidthPage = isStoriesPage || isEditProfilePage || isCreatePostPage || isMessagesPage;
+
   // Show loading while checking session
   if (isCheckingSession) {
     return (
@@ -104,210 +102,91 @@ const ProtectedAppContent: React.FC = () => {
 
   return (
     <UnfollowConfirmProvider>
-      <div className="min-h-screen bg-background text-foreground transition-colors duration-200">
-        {/* Desktop Header */}
-        {!isEditProfilePage && !isCreatePostPage && !isSearchPage && !isStoriesPage && !isMessagesPage && <Header />}
-        
-        {/* Mobile Header - Only show on specific pages */}
-        {shouldShowMobileHeader && <MobileHeader />}
-        
-        {/* Mobile Bottom Navigation - Hide on search page and in individual chats */}
-        {!isEditProfilePage && !isCreatePostPage && !isSearchPage && !isMessagesPage && !isStoriesPage && <BottomNav />}
-        
-        <main className={`w-full ${shouldShowMobileHeader ? 'pt-16' : ''} ${isMessagesPage || isEditProfilePage || isCreatePostPage || isSearchPage || isStoriesPage ? 'px-0 py-0' : 'px-0 py-6'}`}>
-          {isStoriesPage ? (
-            // Full screen layout for Stories page
-            <div className="w-full h-screen overflow-hidden">
-              <ToastProvider>
-                <TooltipProvider>
-                  <Suspense fallback={
-                    <div className="flex items-center justify-center min-h-screen bg-gradient-to-br from-purple-900 via-blue-900 to-indigo-900">
-                      <div className="text-center space-y-4">
-                        <div className="w-8 h-8 border-4 border-white border-t-transparent rounded-full animate-spin mx-auto"></div>
-                        <p className="text-white">Loading Stories...</p>
-                      </div>
-                    </div>
-                  }>
-                    <Routes>
-                      <Route path="/stories" element={<StoriesPage />} />
-                    </Routes>
-                  </Suspense>
-                </TooltipProvider>
-              </ToastProvider>
+      <PageLayout
+        showSidebars={!isFullWidthPage}
+        showMobileHeader={shouldShowMobileHeader}
+        showBottomNav={!isFullWidthPage}
+        fullWidth={isFullWidthPage}
+      >
+        <ToastProvider>
+          <Suspense fallback={
+            <div className="flex items-center justify-center min-h-screen">
+              <div className="text-center space-y-4">
+                <div className="w-8 h-8 border-4 border-primary border-t-transparent rounded-full animate-spin mx-auto"></div>
+                <p className="text-muted-foreground">Loading...</p>
+              </div>
             </div>
-          ) : isEditProfilePage ? (
-            // Full width layout for Edit Profile page
-            <div className="w-full">
-              <ToastProvider>
-                <TooltipProvider>
-                  <Suspense fallback={
-                    <div className="flex items-center justify-center min-h-screen">
-                      <div className="text-center space-y-4">
-                        <div className="w-8 h-8 border-4 border-primary border-t-transparent rounded-full animate-spin mx-auto"></div>
-                        <p className="text-muted-foreground">Loading...</p>
-                      </div>
-                    </div>
-                  }>
-                    <Routes>
-                      <Route path="/edit-profile/:address" element={<EditProfilePage />} />
-                      <Route path="/edit-profile" element={<EditProfilePage />} />
-                    </Routes>
-                  </Suspense>
-                </TooltipProvider>
-              </ToastProvider>
-            </div>
-          ) : isCreatePostPage ? (
-            // Full width layout for Create Post page
-            <div className="w-full">
-              <ToastProvider>
-                <TooltipProvider>
-                  <Suspense fallback={
-                    <div className="flex items-center justify-center min-h-screen">
-                      <div className="text-center space-y-4">
-                        <div className="w-8 h-8 border-4 border-primary border-t-transparent rounded-full animate-spin mx-auto"></div>
-                        <p className="text-muted-foreground">Loading...</p>
-                      </div>
-                    </div>
-                  }>
-                    <Routes>
-                      <Route path="/post" element={<CreatePostPage />} />
-                    </Routes>
-                  </Suspense>
-                </TooltipProvider>
-              </ToastProvider>
-            </div>
-          ) : isMessagesPage ? (
-            // Fullscreen messenger (mobile + desktop): no app header / sidebars
-            <div className="flex h-[100dvh] max-h-[100dvh] w-full flex-col overflow-hidden bg-background">
-              <TooltipProvider>
-                <div className="flex min-h-0 flex-1 flex-col">
-                  <Suspense fallback={
-                    <div className="flex flex-1 items-center justify-center bg-background">
-                      <div className="text-center space-y-4">
-                        <div className="w-8 h-8 border-4 border-primary border-t-transparent rounded-full animate-spin mx-auto"></div>
-                        <p className="text-muted-foreground">Loading...</p>
-                      </div>
-                    </div>
-                  }>
-                    <Routes>
-                      <Route path="/messages/*" element={<MessagesPage />} />
-                    </Routes>
-                  </Suspense>
-                </div>
-              </TooltipProvider>
-            </div>
-          ) : (
-            // Standard layout with sidebars for other pages - ADD GESTURE SUPPORT HERE
-            <div className="w-full lg:grid lg:grid-cols-12 lg:gap-6 lg:px-8">
-              <aside className="hidden lg:block lg:col-span-3">
-                <div className="sticky top-16 h-[calc(100vh-64px)] overflow-y-auto">
-                  <SidebarLeft />
-                </div>
-              </aside>
-
-              {/* Main Content - WITH GESTURE SUPPORT */}
-              <section className="w-full lg:col-span-6">
-                <TooltipProvider>
-                  <AnimatePresence mode="wait">
-                    <Routes location={location} key={location.pathname}>
-                      {/* Profile pages - Motion transitions */}
-                      <Route path="/profile/:userId" element={
-                        <motion.div
-                          initial={{ opacity: 0, y: 8 }}
-                          animate={{ opacity: 1, y: 0 }}
-                          exit={{ opacity: 0, y: -8 }}
-                          transition={{ duration: 0.2, ease: "easeOut" }}
-                        >
-                          <React.Suspense fallback={
-                            <div className="flex items-center justify-center h-screen">
-                              <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-primary"></div>
-                            </div>
-                          }>
-                            <ProfilePage />
-                          </React.Suspense>
-                        </motion.div>
-                      } />
-                      <Route path="/profile/me" element={
-                        <motion.div
-                          initial={{ opacity: 0, y: 8 }}
-                          animate={{ opacity: 1, y: 0 }}
-                          exit={{ opacity: 0, y: -8 }}
-                          transition={{ duration: 0.2, ease: "easeOut" }}
-                        >
-                          <React.Suspense fallback={
-                            <div className="flex items-center justify-center h-screen">
-                              <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-primary"></div>
-                            </div>
-                          }>
-                            <ProfilePage />
-                          </React.Suspense>
-                        </motion.div>
-                      } />
-                      
-                      {/* Post detail - Motion transitions */}
-                      <Route path="/post/:postId" element={
-                        <motion.div
-                          initial={{ opacity: 0, y: 8 }}
-                          animate={{ opacity: 1, y: 0 }}
-                          exit={{ opacity: 0, y: -8 }}
-                          transition={{ duration: 0.2, ease: "easeOut" }}
-                        >
-                          <React.Suspense fallback={
-                            <div className="flex items-center justify-center h-screen">
-                              <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-primary"></div>
-                            </div>
-                          }>
-                            <PostDetailPage />
-                          </React.Suspense>
-                        </motion.div>
-                      } />
-                      
-                      {/* Search page - Special motion */}
-                      <Route path="/search" element={
-                        <motion.div
-                          initial={{ opacity: 0, y: 10 }}
-                          animate={{ opacity: 1, y: 0 }}
-                          exit={{ opacity: 0, y: -10 }}
-                          transition={{ duration: 0.2, ease: "easeOut" }}
-                          className="h-full"
-                        >
-                          <React.Suspense fallback={
-                            <div className="flex items-center justify-center h-screen">
-                              <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
-                            </div>
-                          }>
-                            <SearchPage />
-                          </React.Suspense>
-                        </motion.div>
-                      } />
-                      
-                      {/* AnimatedRoutes handles: /, /feed, /friend, /notifications, /messages */}
-                      {/* Mobile slide animations, desktop no animations */}
-                      <Route path="/*" element={
-                        <React.Suspense fallback={
-                          <div className="flex items-center justify-center h-screen">
-                            <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
-                          </div>
-                        }>
-                          <AnimatedRoutes />
-                        </React.Suspense>
-                      } />
-                    </Routes>
-                  </AnimatePresence>
-                </TooltipProvider>
-              </section>
-
-              {/* Right Sidebar */}
-              <aside className="hidden lg:block lg:col-span-3">
-                <div className="sticky top-16 h-[calc(100vh-64px)] overflow-y-auto">
-                  <SidebarRight />
-                </div>
-              </aside>
-            </div>
-          )}
-        </main>
-        </div>
-      </UnfollowConfirmProvider>
+          }>
+            <AnimatePresence mode="wait">
+              <Routes location={location} key={location.pathname}>
+                {/* Profile pages - Motion transitions */}
+                <Route path="/profile/:userId" element={
+                  <motion.div
+                    initial={{ opacity: 0, y: 8 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, y: -8 }}
+                    transition={{ duration: 0.2, ease: "easeOut" }}
+                  >
+                    <ProfilePage />
+                  </motion.div>
+                } />
+                <Route path="/profile/me" element={
+                  <motion.div
+                    initial={{ opacity: 0, y: 8 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, y: -8 }}
+                    transition={{ duration: 0.2, ease: "easeOut" }}
+                  >
+                    <ProfilePage />
+                  </motion.div>
+                } />
+                
+                {/* Post detail - Motion transitions */}
+                <Route path="/post/:postId" element={
+                  <motion.div
+                    initial={{ opacity: 0, y: 8 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, y: -8 }}
+                    transition={{ duration: 0.2, ease: "easeOut" }}
+                  >
+                    <PostDetailPage />
+                  </motion.div>
+                } />
+                
+                {/* Search page - Special motion */}
+                <Route path="/search" element={
+                  <motion.div
+                    initial={{ opacity: 0, y: 10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, y: -10 }}
+                    transition={{ duration: 0.2, ease: "easeOut" }}
+                    className="h-full"
+                  >
+                    <SearchPage />
+                  </motion.div>
+                } />
+                
+                {/* Stories page */}
+                <Route path="/stories" element={<StoriesPage />} />
+                
+                {/* Edit Profile page */}
+                <Route path="/edit-profile/:address" element={<EditProfilePage />} />
+                <Route path="/edit-profile" element={<EditProfilePage />} />
+                
+                {/* Create Post page */}
+                <Route path="/post" element={<CreatePostPage />} />
+                
+                {/* Messages page */}
+                <Route path="/messages/*" element={<MessagesPage />} />
+                
+                {/* AnimatedRoutes handles: /, /feed, /friend, /notifications */}
+                <Route path="/*" element={<AnimatedRoutes />} />
+              </Routes>
+            </AnimatePresence>
+          </Suspense>
+        </ToastProvider>
+      </PageLayout>
+    </UnfollowConfirmProvider>
   );
 };
 
