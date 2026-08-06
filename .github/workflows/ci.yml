@@ -15,7 +15,7 @@ jobs:
         working-directory: ./backend
     
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
       
       - name: Setup Node.js
         uses: actions/setup-node@v4
@@ -44,7 +44,7 @@ jobs:
         working-directory: ./frontend
     
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
       
       - name: Setup Node.js
         uses: actions/setup-node@v4
@@ -73,7 +73,7 @@ jobs:
         working-directory: ./pyBackend
     
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
       
       - name: Setup Python
         uses: actions/setup-python@v5
@@ -99,7 +99,7 @@ jobs:
   docker:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
       
       - name: Build Docker images
         run: docker compose build --no-cache backend pybackend
