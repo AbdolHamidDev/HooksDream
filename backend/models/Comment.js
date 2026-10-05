@@ -151,17 +151,17 @@ CommentSchema.methods.extractMentions = async function() {
 };
 
 // Pre-save middleware
-CommentSchema.pre('save', async function(next) {
+// Mongoose 9 đã bỏ callback-style cho document middleware: hook async
+// không được khai báo tham số `next` (nó sẽ undefined và gọi ra lỗi).
+CommentSchema.pre('save', async function() {
     if (this.isModified('content')) {
         await this.extractMentions();
-        
+
         if (this.isModified() && !this.isNew) {
             this.isEdited = true;
             this.editedAt = new Date();
         }
     }
-    
-    next();
 });
 
 // Post-save middleware để cập nhật comment count trong Post

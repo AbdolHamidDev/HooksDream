@@ -513,11 +513,11 @@ StorySchema.statics.getStoriesByProximity = function(centerX, centerY, radius = 
 };
 
 // Pre-save middleware
-StorySchema.pre('save', function(next) {
+// Mongoose 9 bỏ callback-style -> bỏ tham số `next`.
+StorySchema.pre('save', function() {
     if (this.isModified() && !this.isNew) {
         this.updatedAt = new Date();
     }
-    next();
 });
 
 module.exports = mongoose.model('Story', StorySchema);

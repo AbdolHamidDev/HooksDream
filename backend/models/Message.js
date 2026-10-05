@@ -187,7 +187,8 @@ messageSchema.methods.editMessage = function(newContent) {
 };
 
 // Pre-save middleware để update conversation lastActivity
-messageSchema.pre('save', async function(next) {
+// Mongoose 9 bỏ callback-style -> bỏ tham số `next`.
+messageSchema.pre('save', async function() {
   if (this.isNew) {
     try {
       const Conversation = mongoose.model('Conversation');
@@ -199,7 +200,6 @@ messageSchema.pre('save', async function(next) {
       console.error('Error updating conversation:', error);
     }
   }
-  next();
 });
 
 module.exports = mongoose.model('Message', messageSchema);

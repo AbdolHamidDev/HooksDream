@@ -290,22 +290,21 @@ PostSchema.methods.extractLinkPreviews = async function() {
 };
 
 // Pre-save middleware để tự động extract hashtags, mentions và link previews
-PostSchema.pre('save', async function(next) {
+// Mongoose 9 bỏ callback-style -> hook async không khai báo tham số `next`.
+PostSchema.pre('save', async function() {
     if (this.isModified('content')) {
         this.extractHashtags();
         await this.extractMentions();
         await this.extractLinkPreviews();
-        
+
         if (this.isModified() && !this.isNew) {
             this.isEdited = true;
             this.editedAt = new Date();
         }
     }
-    
+
     // Tính lại engagement score
     this.calculateEngagementScore();
-    
-    next();
 });
 
 // Method để soft delete

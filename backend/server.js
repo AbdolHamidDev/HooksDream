@@ -1,6 +1,7 @@
 const express = require('express');
 const mongoose = require('mongoose');
 const cors = require('cors');
+const helmet = require('helmet');
 const cloudinary = require('cloudinary').v2;
 const http = require('http');
 const SocketServer = require('./socket/socketServer');
@@ -53,50 +54,70 @@ const authLimiter = rateLimit({
 app.use('/api/', apiLimiter);
 app.use('/api/auth/', authLimiter);
 
-// Middleware
-app.use(cors({
-  origin: function (origin, callback) {
-    // Allow requests with no origin (like mobile apps or curl requests)
-    if (!origin) return callback(null, true);
-    
-    const allowedOrigins = [
-      'http://localhost:3000',
-      'http://localhost:5173',
-      'https://hooksdream.vercel.app',
-      'https://hooksdream.netlify.app',
-      'https://just-solace-production.up.railway.app',
-      'https://hooksdream.onrender.com'
-    ];
-    
-    const allowedPatterns = [
-      /^https:\/\/.*\.vercel\.app$/,
-      /^https:\/\/.*\.netlify\.app$/,
-      /^https:\/\/.*\.fly\.dev$/,
-      /^https:\/\/.*\.railway\.app$/,
-      /^https:\/\/.*\.onrender\.com$/
-    ];
-    
-    // Check exact matches
-    if (allowedOrigins.includes(origin)) {
-      return callback(null, true);
-    }
-    
-    // Check pattern matches
-    if (allowedPatterns.some(pattern => pattern.test(origin))) {
-      return callback(null, true);
-    }
-    
-    console.log('❌ CORS blocked origin:', origin);
-    callback(new Error('Not allowed by CORS'));
-  },
-  credentials: true,
-  methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
-  allowedHeaders: ['Content-Type', 'Authorization']
-}));
+// Danh sách origin được phép.
+// Ưu tiên biến môi trường FRONTEND_URLS (danh sách ngăn cách bằng dấu phẩy) để
+// môi trường deploy không cần sửa code.
+const configuredOrigins = (process.env.FRONTEND_URLS || '')
+  .split(',')
+  .map((o) => o.trim())
+  .filter(Boolean);
 
-// Tăng giới hạn kích thước request cho upload file lớn
-app.use(express.json({ limit: '50mb' }));
-app.use(express.urlencoded({ extended: true, limit: '50mb' }));
+const DEFAULT_ORIGINS = [
+  'http://localhost:3000',
+  'http://localhost:5173',
+  'https://hooksdream.vercel.app',
+  'https://hooksdream.netlify.app',
+  'https://hooksdream.onrender.com'
+];
+
+const allowedOrigins = new Set([...DEFAULT_ORIGINS, ...configuredOrigins]);
+
+// Middleware
+// helmet thêm các header bảo mật chuẩn (CSP, X-Content-Type-Options,
+// X-Frame-Options, HSTS...). Tắt COEP vì cần cross-origin cho ảnh Cloudinary.
+app.use(
+  helmet({
+    contentSecurityPolicy: {
+      directives: {
+        defaultSrc: ["'self'"],
+        imgSrc: ["'self'", 'data:', 'blob:', 'https://res.cloudinary.com'],
+        mediaSrc: ["'self'", 'blob:', 'https://res.cloudinary.com'],
+        connectSrc: ["'self'", 'https://*.cloudinary.com', 'wss:', 'https:'],
+        scriptSrc: ["'self'"],
+        styleSrc: ["'self'", "'unsafe-inline'"],
+        fontSrc: ["'self'", 'data:'],
+        objectSrc: ["'none'"],
+        frameAncestors: ["'self'"],
+      },
+    },
+    crossOriginEmbedderPolicy: false,
+  })
+);
+
+app.use(
+  cors({
+    origin: function (origin, callback) {
+      // Cho phép request không có Origin (mobile app, curl, health check).
+      if (!origin) return callback(null, true);
+
+      if (allowedOrigins.has(origin)) {
+        return callback(null, true);
+      }
+
+      console.warn('❌ CORS blocked origin:', origin);
+      callback(new Error('Not allowed by CORS'));
+    },
+    credentials: true,
+    methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
+    allowedHeaders: ['Content-Type', 'Authorization'],
+  })
+);
+
+// Giới hạn kích thước body. Trước đây là 50mb cho mọi request — quá rộng và
+// mở đường cho tấn công memory exhaustion. File lớn đi qua multer/Cloudinary,
+// không cần thiết phải nhồi vào JSON body.
+app.use(express.json({ limit: '2mb' }));
+app.use(express.urlencoded({ extended: true, limit: '2mb' }));
 
 // Kết nối MongoDB với better error handling
 const MONGODB_URI = process.env.MONGODB_URI;
@@ -206,14 +227,24 @@ app.use('/api/notifications', notificationRoutes);
 app.use('/api/search', searchRoutes);
 app.use('/api/stories', storyRoutes);
 app.use('/api/discovery', friendDiscoveryRoutes);
-// Xử lý lỗi
-app.use((err, req, res, next) => {
-  res.status(500).json({ message: 'Something went wrong!' });
+
+// Xử lý 404 — phải đặt sau tất cả route.
+// Express 5 dùng path-to-regexp nghiêm ngặt: '*' không còn hợp lệ và sẽ ném
+// "Missing parameter name". Bỏ hẳn tham số path để khớp mọi đường dẫn còn lại.
+app.use((req, res) => {
+  res.status(404).json({ message: 'Route not found' });
 });
 
-// Xử lý 404
-app.use('*', (req, res) => {
-  res.status(404).json({ message: 'Route not found' });
+// Xử lý lỗi — luôn đặt CUỐI CÙNG, sau cả handler 404.
+// Express 5 tự bắt promise bị reject trong handler nên lỗi async sẽ tới đây.
+app.use((err, req, res, next) => {
+  if (err) {
+    console.error(`❌ Unhandled error [${req.method} ${req.originalUrl}]:`, err.message);
+  }
+  if (res.headersSent) {
+    return next(err);
+  }
+  res.status(500).json({ message: 'Something went wrong!' });
 });
 
 // Initialize Socket.IO
