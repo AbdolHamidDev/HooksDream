@@ -382,13 +382,18 @@ export const useConversation = (conversationId: string) => {
 
 // Hook for starting a chat with a user
 export const useStartChat = () => {
-  const { useDirectConversation } = useChat();
-  
+  const queryClient = useQueryClient();
+
   const startChatWithUser = useCallback(async (userId: string) => {
     try {
-      // This will create conversation if it doesn't exist
-      const { data } = await useDirectConversation(userId).refetch();
+      // Không được gọi useDirectConversation() ở đây: nó là hook bọc quanh
+      // useQuery, mà hook chỉ hợp lệ khi chạy trong lúc render chứ không được
+      // gọi bên trong callback/event handler. Gọi thẳng API thay thế.
+      const { data } = await chatApi.getOrCreateDirectConversation(userId);
       if (data?.success && data.data) {
+        // Đồng bộ cache để các component dùng useDirectConversation(userId)
+        // nhận được kết quả ngay mà không phải refetch.
+        queryClient.setQueryData(chatQueryKeys.conversation(`direct-${userId}`), data);
         return data.data;
       }
       throw new Error('Failed to create conversation');
@@ -396,8 +401,8 @@ export const useStartChat = () => {
       console.error('Failed to start chat:', error);
       throw error;
     }
-  }, [useDirectConversation]);
-  
+  }, [queryClient]);
+
   return {
     startChatWithUser,
   };

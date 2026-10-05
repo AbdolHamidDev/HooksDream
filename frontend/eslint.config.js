@@ -50,12 +50,10 @@ export default tseslint.config([
       'react-hooks/use-memo': 'warn',
       'react-refresh/only-export-components': 'warn',
 
-      // Còn 2 vi phạm rules-of-hooks cần refactor thật (hook nằm trong
-      // .map()/callback):
-      //   SpringProgressBar.tsx -> useSpring trong vòng lặp
-      //   useChat.ts            -> useDirectConversation trong callback
-      // Sửa cần tách component nên tách task riêng, tạm hạ xuống warn.
-      'react-hooks/rules-of-hooks': 'warn',
+      // Rules of Hooks: đã dọn sạch, giữ ở mức 'error' để chặn tái phạm.
+      // (Trước đây có 2 vi phạm: useSpring trong .map() và hook bị gọi bên
+      // trong callback — cả hai đã được sửa.)
+      'react-hooks/rules-of-hooks': 'error',
     },
   },
 ])
