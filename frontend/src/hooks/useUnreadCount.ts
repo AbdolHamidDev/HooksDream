@@ -59,7 +59,7 @@ export const useUnreadCount = (currentUserId?: string) => {
   const calculateUnreadMessages = useCallback(() => {
     if (!conversations?.data) return 0;
     
-    return conversations.data.reduce((total, conversation) => {
+    return conversations.data.reduce((total: number, conversation: { unreadCount?: number }) => {
       // Use the unreadCount field from conversation
       return total + (conversation.unreadCount || 0);
     }, 0);

@@ -128,7 +128,7 @@ export const useChat = () => {
             _id: currentUserId!,
             username: currentUser?.username || 'You',
             displayName: currentUser?.displayName || 'You',
-            avatar: currentUser?.avatar,
+            avatar: currentUser?.avatar || '',
           },
           content: messageData,
           type: messageData.image ? 'image' : 'text',
