@@ -11,11 +11,13 @@ import { StoryCreator } from '@/components/story/StoryCreator';
 import { useStories } from '@/hooks/useStories';
 import { useIsMobile } from '@/hooks/useIsMobile';
 import { useStoryArchive } from '@/hooks/useStoryArchive';
+import { useRequireAuth } from '@/hooks/useRequireAuth';
 
 export const StoriesPage: React.FC = () => {
   const navigate = useNavigate();
   const isMobile = useIsMobile();
-  
+  const requireAuth = useRequireAuth();
+
   // Prevent body scroll when on stories page
   React.useEffect(() => {
     document.body.classList.add('stories-page');
@@ -28,6 +30,12 @@ export const StoriesPage: React.FC = () => {
   const [userStories, setUserStories] = useState<Story[]>([]); // Stories of selected user
   const [showCreator, setShowCreator] = useState(false);
   const [showSettings, setShowSettings] = useState(false);
+
+  // Khách vẫn xem được stories, chỉ tạo story mới cần đăng nhập
+  const handleOpenCreator = useCallback(() => {
+    if (!requireAuth('stories')) return;
+    setShowCreator(true);
+  }, [requireAuth]);
 
   // Use stories hook with React Query caching
   const {
@@ -203,7 +211,7 @@ export const StoriesPage: React.FC = () => {
 
        {/* Create Story Button */}
 <button
-  onClick={() => setShowCreator(true)}
+  onClick={handleOpenCreator}
   className={cn(
     "flex items-center space-x-2 px-3 py-2 rounded-lg transition-colors duration-150",
     "bg-purple-600 hover:bg-purple-700",
@@ -250,7 +258,7 @@ export const StoriesPage: React.FC = () => {
 
           {/* Create Story Button - Bottom Right */}
           <button
-            onClick={() => setShowCreator(true)}
+            onClick={handleOpenCreator}
             className="fixed bottom-6 right-6 z-20 p-4 rounded-full bg-gradient-to-r from-purple-600 to-blue-600 shadow-lg transition-all duration-200 hover:scale-110"
           >
             <Plus className="w-6 h-6 text-white" />
@@ -272,7 +280,7 @@ export const StoriesPage: React.FC = () => {
               </p>
             </div>
             <button
-              onClick={() => setShowCreator(true)}
+              onClick={handleOpenCreator}
               className={cn(
                 "inline-flex items-center space-x-2 px-6 py-3 rounded-xl transition-all duration-200",
                 "bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700",

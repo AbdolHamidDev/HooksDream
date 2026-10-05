@@ -392,6 +392,30 @@
     "unableToLoadImage": "Unable to load image",
     "viewAll": "View all"
   },
+  "authPrompt": {
+    "login": "Sign in",
+    "title": "Sign in to continue",
+    "continueBrowsing": "Keep browsing without signing in",
+    "reason": {
+      "default": "Sign in to join the conversation and connect with the community.",
+      "like": "Sign in to like this post.",
+      "comment": "Sign in to write a comment.",
+      "repost": "Sign in to share this post.",
+      "follow": "Sign in to follow this user.",
+      "bookmark": "Sign in to save this post.",
+      "report": "Sign in to report this post.",
+      "createPost": "Sign in to create a new post.",
+      "notifications": "Sign in to see your notifications.",
+      "messages": "Sign in to message your friends.",
+      "stories": "Sign in to watch and post stories.",
+      "profile": "Sign in to manage your profile.",
+      "settings": "Sign in to open settings."
+    }
+  },
+  "sidebar": {
+    "signInTitle": "Sign in to connect",
+    "signInDesc": "See the people you follow and chat with them on HooksDream."
+  },
   "search": {
     "loading": "Searching...",
     "noResults": "No users found",

@@ -57,13 +57,19 @@ export const usePushNotifications = () => {
     }
 
     try {
+      // Vite chỉ expose biến VITE_* qua import.meta.env.
+      // process.env bị shim thành {} nên luôn undefined -> key rỗng -> subscribe lỗi.
+      const vapidPublicKey = import.meta.env.VITE_VAPID_PUBLIC_KEY;
+      if (!vapidPublicKey) {
+        console.error('VITE_VAPID_PUBLIC_KEY chưa được cấu hình, bỏ qua đăng ký push.');
+        return null;
+      }
+
       const registration = await navigator.serviceWorker.ready;
       
       const subscription = await registration.pushManager.subscribe({
         userVisibleOnly: true,
-        applicationServerKey: urlBase64ToUint8Array(
-          process.env.VITE_VAPID_PUBLIC_KEY || ''
-        )
+        applicationServerKey: urlBase64ToUint8Array(vapidPublicKey)
       });
 
       setSubscription(subscription);

@@ -26,6 +26,7 @@ import { CommentInput } from './CommentInput';
 import { formatDistanceToNow } from 'date-fns';
 import { UserProfile } from '@/types/user';
 import { useCommentSocket } from '@/hooks/useSocket';
+import { useRequireAuth } from '@/hooks/useRequireAuth';
 
 // Inline Edit Form Component
 interface InlineEditFormProps {
@@ -127,6 +128,7 @@ export const Comment: React.FC<CommentProps> = ({
   const [isEditing, setIsEditing] = useState(false);
   const [showReplies, setShowReplies] = useState(false);
   const [replies, setReplies] = useState<any[]>([]);
+  const requireAuth = useRequireAuth();
   
   // Real-time socket for smooth updates
   const { onCommentLiked, emitCommentLike } = useCommentSocket(postId);
@@ -170,6 +172,8 @@ export const Comment: React.FC<CommentProps> = ({
   ));
 
   const handleLike = async () => {
+    // Khách bấm like bình luận -> mở drawer đăng nhập
+    if (!requireAuth('like')) return;
     if (!fallbackUser) {
       return;
     }

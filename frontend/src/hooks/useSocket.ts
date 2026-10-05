@@ -193,7 +193,7 @@ export const useSocket = () => {
       import.meta.env.VITE_API_BASE_URL || 
       (import.meta.env.MODE === 'development' 
         ? 'http://localhost:5000' 
-        : 'https://hooksdream.onrender.com');
+        : 'https://hooksdream-rjwo.onrender.com');
 
     const newSocket = io(SOCKET_URL, {
       auth: {

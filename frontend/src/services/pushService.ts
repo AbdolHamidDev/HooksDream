@@ -23,7 +23,12 @@ export interface NotificationPayload {
 }
 
 class PushService {
-  private readonly VAPID_PUBLIC_KEY = import.meta.env.VITE_VAPID_PUBLIC_KEY || 'BBR4PKr7qVZpqe6maqtQGrVsz4IqHPfBDbl1ONbWdb72yukkIJyGd0fAsY0pfy6T-6xETO5Lv3Lz1xbjIPn4Pg8';
+  // Phải khớp VAPID_PUBLIC_KEY của backend (.env).
+  // Fallback cũ từng sai -> subscribe luôn thất bại. Giữ fallback đúng để dev
+  // chạy được khi quên set biến, nhưng luôn ưu tiên biến môi trường.
+  private readonly VAPID_PUBLIC_KEY =
+    import.meta.env.VITE_VAPID_PUBLIC_KEY ||
+    'BMn1I7QEWAwSOtb_E3tsm3AO2MO_HmwuHzCQsmnRGDuQJRKL3m5xw1S5-NAcqGfcpxW--2vIz4-0cNSo2YlSfSc';
   
   // Check if push notifications are supported
   isSupported(): boolean {

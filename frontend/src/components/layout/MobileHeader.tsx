@@ -10,6 +10,7 @@ import { useAppStore } from '@/store/useAppStore';
 import { useSocial } from '@/hooks/useSocial';
 import { useUnreadCount } from '@/hooks/useUnreadCount';
 import { useScrollDirection } from '@/hooks/useScrollDirection';
+import { useAuthPrompt } from '@/contexts/AuthPromptContext';
 import { UserProfileSheet } from './UserProfileSheet';
 import { SettingsModal } from './setting/SettingsModal';
 import { motion } from 'framer-motion';
@@ -25,6 +26,7 @@ export const MobileHeader: React.FC<MobileHeaderProps> = ({ className = '' }) =>
   const { useCurrentProfile } = useSocial();
   const { unreadCount } = useUnreadCount(user?.hashId);
   const { isVisible } = useScrollDirection({ threshold: 10 });
+  const { openAuthPrompt } = useAuthPrompt();
 
   // Profile data
   const { data: profileData, isLoading: isProfileLoading } = useCurrentProfile();
@@ -135,32 +137,43 @@ export const MobileHeader: React.FC<MobileHeaderProps> = ({ className = '' }) =>
               <Search className="w-5 h-5" />
             </Button>
 
-            {/* User Avatar */}
-            <Button
-              variant="ghost"
-              size="sm"
-              onClick={handleAvatarClick}
-              className="p-1"
-            >
-              <Avatar className="w-8 h-8">
-                {isProfileLoading ? (
-                  <AvatarFallback className="animate-pulse bg-muted text-xs">
-                    {avatarFallback}
-                  </AvatarFallback>
-                ) : (
-                  <>
-                    <AvatarImage 
-                      src={avatar} 
-                      alt={displayName}
-                      className="object-cover"
-                    />
-                    <AvatarFallback className="text-xs">
+            {/* User Avatar / Đăng nhập */}
+            {!isConnected ? (
+              <Button
+                variant="default"
+                size="sm"
+                onClick={() => openAuthPrompt('default')}
+                className="rounded-full px-3 py-1.5 text-xs font-semibold"
+              >
+                {t('authPrompt.login')}
+              </Button>
+            ) : (
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={handleAvatarClick}
+                className="p-1"
+              >
+                <Avatar className="w-8 h-8">
+                  {isProfileLoading ? (
+                    <AvatarFallback className="animate-pulse bg-muted text-xs">
                       {avatarFallback}
                     </AvatarFallback>
-                  </>
-                )}
-              </Avatar>
-            </Button>
+                  ) : (
+                    <>
+                      <AvatarImage 
+                        src={avatar} 
+                        alt={displayName}
+                        className="object-cover"
+                      />
+                      <AvatarFallback className="text-xs">
+                        {avatarFallback}
+                      </AvatarFallback>
+                    </>
+                  )}
+                </Avatar>
+              </Button>
+            )}
           </div>
         </div>
       </motion.div>

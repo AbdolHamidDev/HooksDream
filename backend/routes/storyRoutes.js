@@ -18,7 +18,7 @@ const {
     reactionValidation,
     replyValidation
 } = require('../controllers/storyController');
-const { authMiddleware } = require('../middleware/auth');
+const { authMiddleware, optionalAuth } = require('../middleware/auth');
 const rateLimit = require('express-rate-limit');
 
 // Rate limiting for story creation
@@ -61,8 +61,9 @@ router.post('/',
 );
 
 // 🌍 Get Active Stories (with 3D positioning support)
+// Khách chưa đăng nhập vẫn xem được stories
 router.get('/', 
-    authMiddleware,
+    optionalAuth,
     getActiveStories
 );
 

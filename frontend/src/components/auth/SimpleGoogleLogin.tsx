@@ -6,9 +6,15 @@ import { useAuth } from '@/hooks/useAuth';
 interface SimpleGoogleLoginProps {
   onSuccess?: (response: any) => void;
   onError?: (error: any) => void;
+  /**
+   * Đường dẫn chuyển hướng sau khi đăng nhập.
+   * - Mặc định '/feed' (giữ hành vi cũ)
+   * - null = không chuyển hướng, dùng cho drawer (store đã được cập nhật nên UI tự re-render)
+   */
+  redirectTo?: string | null;
 }
 
-const SimpleGoogleLogin: React.FC<SimpleGoogleLoginProps> = ({ onSuccess, onError }) => {
+const SimpleGoogleLogin: React.FC<SimpleGoogleLoginProps> = ({ onSuccess, onError, redirectTo = '/feed' }) => {
   const buttonRef = useRef<HTMLDivElement>(null);
   const { handleCredentialResponse } = useAuth();
   const { isVisible, message, showProgressiveLogin, hideLoading } = useLoginLoading();
@@ -26,10 +32,12 @@ const SimpleGoogleLogin: React.FC<SimpleGoogleLoginProps> = ({ onSuccess, onErro
       
       if (onSuccess) onSuccess(response);
       
-      // Smooth transition to feed
-      setTimeout(() => {
-        window.location.href = '/feed';
-      }, 1800);
+      // Smooth transition to feed (bỏ qua nếu redirectTo === null)
+      if (redirectTo) {
+        setTimeout(() => {
+          window.location.href = redirectTo;
+        }, 1800);
+      }
     } catch (error) {
       console.error('Login error:', error);
       hideLoading();

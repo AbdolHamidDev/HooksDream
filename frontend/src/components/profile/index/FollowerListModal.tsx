@@ -4,6 +4,7 @@ import { UserCard } from './UserCard';
 import { Skeleton } from '@/components/ui/skeleton';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { useUnfollowConfirm } from '@/contexts/UnfollowConfirmContext';
+import { useRequireAuth } from '@/hooks/useRequireAuth';
 import { Profile } from '@/store/useAppStore'; 
 
 interface FollowerListModalProps {
@@ -25,8 +26,10 @@ export const FollowerListModal: React.FC<FollowerListModalProps> = ({
 }) => {
   const queryClient = useQueryClient();
   const { showUnfollowConfirm } = useUnfollowConfirm();
+  const requireAuth = useRequireAuth();
   const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || '';
-  const token = localStorage.getItem('user_hash_id') || '';
+  // user_hash_id KHÔNG phải JWT - phải ưu tiên auth_token
+  const token = localStorage.getItem('auth_token') || localStorage.getItem('user_hash_id') || '';
 
   // Fetch users list
   const { data: usersData, isLoading, error, refetch } = useQuery({
@@ -143,6 +146,9 @@ export const FollowerListModal: React.FC<FollowerListModalProps> = ({
   }, [isOpen, refetch]);
 
   const handleFollowToggle = async (targetUserId: string, targetUsername: string) => {
+    // Khách bấm follow/unfollow -> mở drawer đăng nhập
+    if (!requireAuth('follow')) return;
+
     const userToUpdate = usersWithStatus.find((user: any) => getUserId(user) === targetUserId);
     if (!userToUpdate) return;
 

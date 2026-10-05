@@ -4,6 +4,7 @@ import { Button } from '@/components/ui/Button';
 import { UserPlus, UserCheck, Loader2 } from 'lucide-react';
 import { useFollow } from '@/hooks/useFollow';
 import { useTranslation } from 'react-i18next';
+import { useRequireAuth } from '@/hooks/useRequireAuth';
 import { UnfollowConfirmDialog } from '@/components/dialogs/UnfollowConfirmDialog';
 
 interface FollowButtonProps {
@@ -33,6 +34,7 @@ export const FollowButton: React.FC<FollowButtonProps> = ({
 }) => {
   const { t } = useTranslation('common');
   const [showUnfollowDialog, setShowUnfollowDialog] = useState(false);
+  const requireAuth = useRequireAuth();
   const {
     isFollowing,
     followerCount,
@@ -48,6 +50,9 @@ export const FollowButton: React.FC<FollowButtonProps> = ({
     e.preventDefault();
     e.stopPropagation();
     
+    // Khách bấm được -> mở drawer đăng nhập
+    if (!requireAuth('follow')) return;
+
     if (isFollowing) {
       // Hiển thị dialog xác nhận unfollow
       setShowUnfollowDialog(true);

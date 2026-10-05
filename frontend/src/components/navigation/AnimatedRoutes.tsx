@@ -8,13 +8,36 @@ import { Feed } from '@/pages/FeedPage';
 import FriendPage from '@/pages/MobileFriendPage';
 import NotificationsPage from '@/pages/NotificationsPage';
 import { StoriesPage } from '@/pages/StoriesPage';
+import { RequireAuthRoute } from '@/components/routing/RequireAuthRoute';
+import type { AuthPromptReason } from '@/contexts/AuthPromptContext';
 
-const PAGES = [
+interface PageConfig {
+  path: string;
+  component: React.ComponentType;
+  title: string;
+  requiresAuth?: boolean;
+  authReason?: AuthPromptReason;
+}
+
+const PAGES: PageConfig[] = [
   { path: '/stories', component: StoriesPage, title: 'Stories' },
   { path: '/feed', component: Feed, title: 'Feed' },
-  { path: '/friend', component: FriendPage, title: 'Bạn bè' },
-  { path: '/notifications', component: NotificationsPage, title: 'Thông báo' },
+  { path: '/friend', component: FriendPage, title: 'Bạn bè', requiresAuth: true },
+  { path: '/notifications', component: NotificationsPage, title: 'Thông báo', requiresAuth: true, authReason: 'notifications' },
 ];
+
+// Bọc route cần đăng nhập để khách thấy drawer thay vì trang trống
+const renderPageElement = (page: PageConfig) => {
+  const element = <page.component />;
+  if (page.requiresAuth) {
+    return (
+      <RequireAuthRoute reason={page.authReason ?? 'default'}>
+        {element}
+      </RequireAuthRoute>
+    );
+  }
+  return element;
+};
 
 // Slide animation variants
 const slideVariants = {
@@ -91,12 +114,11 @@ export const AnimatedRoutes: React.FC = () => {
       <div className="w-full h-full">
         <Routes>
           {PAGES.map((page) => {
-            const PageComponent = page.component;
             return (
               <Route 
                 key={page.path} 
                 path={page.path} 
-                element={<PageComponent />} 
+                element={renderPageElement(page)} 
               />
             );
           })}
@@ -127,12 +149,11 @@ export const AnimatedRoutes: React.FC = () => {
           >
             <Routes location={location}>
               {PAGES.map((page) => {
-                const PageComponent = page.component;
                 return (
                   <Route 
                     key={page.path} 
                     path={page.path} 
-                    element={<PageComponent />} 
+                    element={renderPageElement(page)} 
                   />
                 );
               })}
@@ -148,12 +169,11 @@ export const AnimatedRoutes: React.FC = () => {
     <div className="w-full h-full">
       <Routes>
         {PAGES.map((page) => {
-          const PageComponent = page.component;
           return (
             <Route 
               key={page.path} 
               path={page.path} 
-              element={<PageComponent />} 
+              element={renderPageElement(page)} 
             />
           );
         })}

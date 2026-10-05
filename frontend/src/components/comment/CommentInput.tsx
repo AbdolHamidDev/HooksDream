@@ -6,6 +6,7 @@ import { api } from '@/services/api';
 import { Loader2, ImageIcon } from 'lucide-react';
 import { Button } from '@/components/ui/Button';
 import { UserProfile } from '@/types/user';
+import { useRequireAuth } from '@/hooks/useRequireAuth';
 
 interface CommentInputProps {
   postId: string;
@@ -26,10 +27,14 @@ export const CommentInput: React.FC<CommentInputProps> = ({
     const [content, setContent] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [image, setImage] = useState<string>('');
+  const requireAuth = useRequireAuth();
 // Sửa phần handleSubmit trong CommentInput.tsx
 const handleSubmit = async (e: React.FormEvent) => {
   e.preventDefault();
   if (!content.trim() || isSubmitting) return;
+
+  // Khách gõ xong bấm gửi -> mở drawer đăng nhập, giữ nguyên nội dung đã gõ
+  if (!requireAuth('comment')) return;
 
   setIsSubmitting(true);
   try {

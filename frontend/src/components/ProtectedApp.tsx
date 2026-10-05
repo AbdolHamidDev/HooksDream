@@ -4,10 +4,11 @@ import { Routes, Route, useNavigate, useLocation } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useAppStore } from "@/store/useAppStore";
 import { useSocket } from "@/hooks/useSocket";
-import ModernAuthConnect from "@/components/auth/ModernAuthConnect";
 import { PageLayout } from "@/components/layout/PageLayout";
 import { useChatContext } from "@/contexts/ChatContext";
 import { UnfollowConfirmProvider } from "@/contexts/UnfollowConfirmContext";
+import { AuthPromptProvider } from "@/contexts/AuthPromptContext";
+import { RequireAuthRoute } from "@/components/routing/RequireAuthRoute";
 import { ChatProvider } from "@/contexts/ChatContext";
 import { ToastProvider } from "@/components/ui/SuccessToast";
 // Lazy load ALL components for better performance and faster navigation
@@ -96,18 +97,17 @@ const ProtectedAppContent: React.FC = () => {
     );
   }
 
-  if (!isConnected || !user) {
-    return <ModernAuthConnect />;
-  }
-
+  // ✅ Guest (chưa đăng nhập) vẫn được vào xem bài viết, chỉ bị chặn khi tương tác.
+  // Việc chặn được xử lý bằng <RequireAuthRoute> và useRequireAuth().
   return (
-    <UnfollowConfirmProvider>
-      <PageLayout
-        showSidebars={!isFullWidthPage}
-        showMobileHeader={shouldShowMobileHeader}
-        showBottomNav={!isFullWidthPage}
-        fullWidth={isFullWidthPage}
-      >
+    <AuthPromptProvider>
+      <UnfollowConfirmProvider>
+        <PageLayout
+          showSidebars={!isFullWidthPage}
+          showMobileHeader={shouldShowMobileHeader}
+          showBottomNav={!isFullWidthPage}
+          fullWidth={isFullWidthPage}
+        >
         <ToastProvider>
           <Suspense fallback={
             <div className="flex items-center justify-center min-h-screen">
@@ -131,14 +131,16 @@ const ProtectedAppContent: React.FC = () => {
                   </motion.div>
                 } />
                 <Route path="/profile/me" element={
-                  <motion.div
-                    initial={{ opacity: 0, y: 8 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    exit={{ opacity: 0, y: -8 }}
-                    transition={{ duration: 0.2, ease: "easeOut" }}
-                  >
-                    <ProfilePage />
-                  </motion.div>
+                  <RequireAuthRoute reason="profile">
+                    <motion.div
+                      initial={{ opacity: 0, y: 8 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      exit={{ opacity: 0, y: -8 }}
+                      transition={{ duration: 0.2, ease: "easeOut" }}
+                    >
+                      <ProfilePage />
+                    </motion.div>
+                  </RequireAuthRoute>
                 } />
                 
                 {/* Post detail - Motion transitions */}
@@ -166,18 +168,34 @@ const ProtectedAppContent: React.FC = () => {
                   </motion.div>
                 } />
                 
-                {/* Stories page */}
+                {/* Stories page - khách xem được, tạo story thì bị gate bên trong StoriesPage */}
                 <Route path="/stories" element={<StoriesPage />} />
                 
                 {/* Edit Profile page */}
-                <Route path="/edit-profile/:address" element={<EditProfilePage />} />
-                <Route path="/edit-profile" element={<EditProfilePage />} />
+                <Route path="/edit-profile/:address" element={
+                  <RequireAuthRoute reason="profile">
+                    <EditProfilePage />
+                  </RequireAuthRoute>
+                } />
+                <Route path="/edit-profile" element={
+                  <RequireAuthRoute reason="profile">
+                    <EditProfilePage />
+                  </RequireAuthRoute>
+                } />
                 
                 {/* Create Post page */}
-                <Route path="/post" element={<CreatePostPage />} />
+                <Route path="/post" element={
+                  <RequireAuthRoute reason="createPost">
+                    <CreatePostPage />
+                  </RequireAuthRoute>
+                } />
                 
                 {/* Messages page */}
-                <Route path="/messages/*" element={<MessagesPage />} />
+                <Route path="/messages/*" element={
+                  <RequireAuthRoute reason="messages">
+                    <MessagesPage />
+                  </RequireAuthRoute>
+                } />
                 
                 {/* AnimatedRoutes handles: /, /feed, /friend, /notifications */}
                 <Route path="/*" element={<AnimatedRoutes />} />
@@ -186,7 +204,8 @@ const ProtectedAppContent: React.FC = () => {
           </Suspense>
         </ToastProvider>
       </PageLayout>
-    </UnfollowConfirmProvider>
+      </UnfollowConfirmProvider>
+    </AuthPromptProvider>
   );
 };
 

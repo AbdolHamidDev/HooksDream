@@ -41,7 +41,7 @@ export const PostLikesSheet: React.FC<PostLikesSheetProps> = ({
   const { showUnfollowConfirm } = useUnfollowConfirm();
   
   const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || '';
-  const token = localStorage.getItem('user_hash_id') || '';
+  const token = localStorage.getItem('auth_token') || localStorage.getItem('user_hash_id') || '';
 
   // Fetch likes list with better caching
   const { data: likesData, isLoading, error, refetch } = useQuery({

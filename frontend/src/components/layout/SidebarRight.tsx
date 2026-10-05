@@ -5,9 +5,15 @@ import { useQuery } from '@tanstack/react-query';
 import { Users, UserCheck } from 'lucide-react';
 import { Avatar, AvatarImage, AvatarFallback } from '@/components/ui/Avatar';
 import { FollowButton } from '@/components/ui/FollowButton';
+import { useAppStore } from '@/store/useAppStore';
+import { useAuthPrompt } from '@/contexts/AuthPromptContext';
+import { useTranslation } from 'react-i18next';
 
 export const SidebarRight: React.FC = () => {
   const navigate = useNavigate();
+  const { t } = useTranslation('common');
+  const { isConnected, user } = useAppStore();
+  const { openAuthPrompt } = useAuthPrompt();
   const { 
     currentUserId,
     useCurrentProfile
@@ -18,7 +24,8 @@ export const SidebarRight: React.FC = () => {
   const actualUserId = currentUserId || currentUserData?.data?._id;
   
   const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || '';
-  const token = localStorage.getItem('user_hash_id') || '';
+  // user_hash_id KHÔNG phải JWT - phải ưu tiên auth_token
+  const token = localStorage.getItem('auth_token') || localStorage.getItem('user_hash_id') || '';
 
   // Load những người đã follow (sử dụng cách tương tự FollowerListModal)
   const { data: followingData, isLoading: isLoadingFollowing } = useQuery({
@@ -48,9 +55,27 @@ export const SidebarRight: React.FC = () => {
   
   const followingUsers = followingData || [];
 
-
-
-  // FollowButton sẽ tự handle follow/unfollow logic
+  // Khách: mời đăng nhập thay vì hiển thị loading vô hạn (useCurrentProfile bị disabled)
+  if (!isConnected || !user) {
+    return (
+      <div className="h-full p-3 space-y-4">
+        <div className="bg-card border rounded-xl p-4">
+          <h3 className="font-semibold text-sm text-foreground mb-2">
+            {t('sidebar.signInTitle')}
+          </h3>
+          <p className="text-xs text-muted-foreground mb-3">
+            {t('sidebar.signInDesc')}
+          </p>
+          <button
+            onClick={() => openAuthPrompt('default')}
+            className="w-full rounded-full bg-primary text-primary-foreground text-sm font-semibold py-2 hover:bg-primary/90 transition-colors"
+          >
+            {t('authPrompt.login')}
+          </button>
+        </div>
+      </div>
+    );
+  }
 
   // Nếu không có userId, hiển thị loading
   if (!actualUserId) {

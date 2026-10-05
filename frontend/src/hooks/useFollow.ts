@@ -2,6 +2,7 @@
 import { useState, useEffect, useCallback } from 'react';
 import { api } from '@/services/api';
 import { useFollowSocket } from '@/hooks/useSocket';
+import { useAppStore } from '@/store/useAppStore';
 
 interface UseFollowProps {
   userId: string;
@@ -18,11 +19,18 @@ export const useFollow = ({
   const [followerCount, setFollowerCount] = useState(initialFollowerCount);
   const [isLoading, setIsLoading] = useState(false);
   
+  const { isConnected, user: currentUser } = useAppStore();
+  const isAuthenticated = !!(isConnected && currentUser);
+  
   // Socket.IO for real-time updates
   const { onFollowUpdate, emitFollow } = useFollowSocket();
 
   // Check follow status on mount - ONLY if no initial value provided
   useEffect(() => {
+    // Endpoint /follow/status yêu cầu đăng nhập.
+    // Bỏ qua với khách để tránh dồn 401 (mỗi nút Follow = 1 request thất bại).
+    if (!isAuthenticated) return;
+
     const checkFollowStatus = async () => {
       try {
         const response = await api.follow.checkFollowStatus(userId);
@@ -38,7 +46,7 @@ export const useFollow = ({
     if (userId && initialIsFollowing === false && initialFollowerCount === 0) {
       checkFollowStatus();
     }
-  }, [userId, initialIsFollowing, initialFollowerCount]);
+  }, [userId, initialIsFollowing, initialFollowerCount, isAuthenticated]);
 
   // Listen for real-time follow updates
   useEffect(() => {
@@ -54,6 +62,8 @@ export const useFollow = ({
   // Handle follow/unfollow action
   const handleToggleFollow = useCallback(async () => {
     if (isLoading) return;
+    // Phòng thủ: endpoint follow yêu cầu đăng nhập (UI thường đã gate trước)
+    if (!isAuthenticated) return;
 
     // ✅ Store original values for rollback
     const originalIsFollowing = isFollowing;
@@ -90,7 +100,7 @@ export const useFollow = ({
     } finally {
       setIsLoading(false);
     }
-  }, [userId, isFollowing, followerCount, isLoading, emitFollow]);
+  }, [userId, isFollowing, followerCount, isLoading, emitFollow, isAuthenticated]);
 
   return {
     isFollowing,

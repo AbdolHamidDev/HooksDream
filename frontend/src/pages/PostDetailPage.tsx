@@ -6,12 +6,14 @@ import { Button } from '@/components/ui/Button';
 import { ArrowLeft, Share, MoreHorizontal } from 'lucide-react';
 import { api } from '@/services/api';
 import { useAppStore } from '@/store/useAppStore';
+import { useRequireAuth } from '@/hooks/useRequireAuth';
 
 export const PostDetailPage: React.FC = () => {
   const { postId } = useParams<{ postId: string }>();
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
   const { user } = useAppStore();
+  const requireAuth = useRequireAuth();
   
   // Get highlight comment ID from URL params
   const highlightCommentId = searchParams.get('highlight');
@@ -51,7 +53,9 @@ export const PostDetailPage: React.FC = () => {
   };
 
   const handleLike = async () => {
-    if (!post || !user) return;
+    if (!post) return;
+    // Khách bấm like -> mở drawer đăng nhập
+    if (!requireAuth('like')) return;
     
     try {
       await api.post.toggleLike(post._id);

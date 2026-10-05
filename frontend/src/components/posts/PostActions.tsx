@@ -12,6 +12,7 @@ import { RepostButton } from '@/components/ui/RepostButton';
 import { Button } from '@/components/ui/Button';
 import { useSuccessToast } from '@/components/ui/SuccessToast';
 import { PostActionDialogs } from './PostActionDialogs';
+import { useRequireAuth } from '@/hooks/useRequireAuth';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -54,6 +55,7 @@ export const PostActions: React.FC<PostActionsProps> = memo(({
   const { showSuccess } = useSuccessToast();
   const [isLiking, setIsLiking] = useState(false);
   const isMobile = useIsMobile();
+  const requireAuth = useRequireAuth();
   
   // Dialog states
   const [dialogs, setDialogs] = useState({
@@ -84,6 +86,7 @@ export const PostActions: React.FC<PostActionsProps> = memo(({
 
   const handleLike = useCallback(async () => {
     if (isLiking) return;
+    if (!requireAuth('like')) return;
     
     setIsLiking(true);
     try {
@@ -91,16 +94,23 @@ export const PostActions: React.FC<PostActionsProps> = memo(({
     } finally {
       setIsLiking(false);
     }
-  }, [isLiking, onLike]);
+  }, [isLiking, onLike, requireAuth]);
 
   // Dialog handlers
   const openDialog = useCallback((type: 'archive' | 'delete' | 'report') => {
+    if (type === 'report' && !requireAuth('report')) return;
     setDialogs(prev => ({ ...prev, [type]: true }));
-  }, []);
+  }, [requireAuth]);
 
   const closeDialog = useCallback((type: 'archive' | 'delete' | 'report') => {
     setDialogs(prev => ({ ...prev, [type]: false }));
   }, []);
+
+  // Bookmark cần đăng nhập (lưu vào tài khoản)
+  const handleBookmarkClick = useCallback(() => {
+    if (!requireAuth('bookmark')) return;
+    onBookmark?.();
+  }, [requireAuth, onBookmark]);
 
   // Action handlers with toast
   const handleArchiveConfirm = useCallback(async () => {
@@ -238,7 +248,7 @@ export const PostActions: React.FC<PostActionsProps> = memo(({
           ) : (
             <>
               {/* Bookmark option cho non-author */}
-              <DropdownMenuItem onClick={onBookmark}>
+              <DropdownMenuItem onClick={handleBookmarkClick}>
                 <Bookmark className={cn(
                   "mr-2 h-4 w-4",
                   isBookmarked && "fill-current text-yellow-500"

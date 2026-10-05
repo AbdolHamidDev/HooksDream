@@ -1,8 +1,9 @@
-import React, { useState } from 'react';
+import React, { useState, useCallback } from 'react';
 import { Repeat2 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { useRepost } from '@/hooks/useRepost';
 import { RepostModal } from '@/components/posts/RepostModal';
+import { useRequireAuth } from '@/hooks/useRequireAuth';
 import { useAppStore, convertUserToProfile } from '@/store/useAppStore';
 import { Post } from '@/store/useAppStore';
 
@@ -24,6 +25,16 @@ export const RepostButton: React.FC<RepostButtonProps> = ({
   const [showRepostModal, setShowRepostModal] = useState(false);
   const { user } = useAppStore();
   const { repostPost, isReposting, error, clearError } = useRepost();
+  const requireAuth = useRequireAuth();
+
+  // Định nghĩa trước early-return để giữ đúng Rules of Hooks
+  const handleRepost = useCallback(() => {
+    // Khách bấm được -> mở drawer đăng nhập
+    if (!requireAuth('repost')) return;
+    
+    clearError();
+    setShowRepostModal(true);
+  }, [requireAuth, clearError]);
 
   // Don't show repost button for own posts
   const isOwnPost = user && post.userId._id === user._id;
@@ -36,13 +47,6 @@ export const RepostButton: React.FC<RepostButtonProps> = ({
     if (count >= 1000000) return `${(count / 1000000).toFixed(1)}M`;
     if (count >= 1000) return `${(count / 1000).toFixed(1)}K`;
     return count.toString();
-  };
-
-  const handleRepost = () => {
-    if (!user) return;
-    
-    clearError();
-    setShowRepostModal(true);
   };
 
   const handleRepostSuccess = (repost: Post) => {
@@ -69,7 +73,6 @@ export const RepostButton: React.FC<RepostButtonProps> = ({
           className
         )}
         aria-label="Repost"
-        disabled={!user}
       >
         <Repeat2 className="w-5 h-5" />
         {showCount && repostCount > 0 && (

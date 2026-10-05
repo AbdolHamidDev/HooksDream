@@ -15,6 +15,30 @@
     "signedInSuccessfully": "Đăng nhập thành công!",
     "secureAuth": "Xác thực an toàn với Google"
   },
+  "authPrompt": {
+    "login": "Đăng nhập",
+    "title": "Đăng nhập để tiếp tục",
+    "continueBrowsing": "Tiếp tục xem không cần đăng nhập",
+    "reason": {
+      "default": "Đăng nhập để tham gia thảo luận và kết nối với cộng đồng.",
+      "like": "Đăng nhập để thích bài viết này.",
+      "comment": "Đăng nhập để viết bình luận.",
+      "repost": "Đăng nhập để chia sẻ bài viết này.",
+      "follow": "Đăng nhập để theo dõi người dùng này.",
+      "bookmark": "Đăng nhập để lưu bài viết này.",
+      "report": "Đăng nhập để báo cáo bài viết này.",
+      "createPost": "Đăng nhập để đăng bài viết mới.",
+      "notifications": "Đăng nhập để xem thông báo của bạn.",
+      "messages": "Đăng nhập để nhắn tin với bạn bè.",
+      "stories": "Đăng nhập để xem và đăng stories.",
+      "profile": "Đăng nhập để quản lý hồ sơ của bạn.",
+      "settings": "Đăng nhập để mở cài đặt."
+    }
+  },
+  "sidebar": {
+    "signInTitle": "Đăng nhập để kết nối",
+    "signInDesc": "Xem những người bạn theo dõi và trò chuyện ngay trên HooksDream."
+  },
   "search": {
     "placeholder": "Tìm kiếm người dùng...",
     "noResults": "Không tìm thấy người dùng nào",

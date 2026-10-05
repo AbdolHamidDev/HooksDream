@@ -16,7 +16,7 @@ export default defineConfig(({ mode }) => {
   // Allow override via environment variable
   const apiTarget = process.env.VITE_API_URL || (isDev 
     ? 'http://localhost:5000'  // Match backend PORT (server.js dev mode: 5000)
-    : 'https://hooksdream.onrender.com'); // Production backend
+    : 'https://hooksdream-rjwo.onrender.com'); // Production backend
   
   console.log(`🔗 API Target: ${apiTarget} (mode: ${mode})`);
 

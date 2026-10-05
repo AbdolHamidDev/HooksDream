@@ -102,9 +102,15 @@ ${colorConfig
 
 const ChartTooltip = RechartsPrimitive.Tooltip
 
+// Recharts 3 chuyển `payload`/`label`/... sang TooltipContentProps (đọc từ
+// context) thay vì nằm trong TooltipProps. Dùng luôn type của thư viện để
+// luôn khớp với phiên bản đang cài, thay vì tự định nghĩa (dễ lệch).
+type ChartTooltipInjected = Partial<RechartsPrimitive.TooltipContentProps>
+
 const ChartTooltipContent = React.forwardRef<
   HTMLDivElement,
-  React.ComponentProps<typeof RechartsPrimitive.Tooltip> &
+  ChartTooltipInjected &
+    React.ComponentProps<typeof RechartsPrimitive.Tooltip> &
     React.ComponentProps<"div"> & {
       hideLabel?: boolean
       hideIndicator?: boolean
@@ -188,11 +194,16 @@ const ChartTooltipContent = React.forwardRef<
           {payload.map((item, index) => {
             const key = `${nameKey || item.name || item.dataKey || "value"}`
             const itemConfig = getPayloadConfigFromPayload(config, item, key)
-            const indicatorColor = color || item.payload.fill || item.color
+            const indicatorColor =
+              color ||
+              (item.payload as { fill?: string } | undefined)?.fill ||
+              item.color
 
             return (
               <div
-                key={item.dataKey}
+                // dataKey trong Recharts 3 có thể là function nên không dùng
+                // trực tiếp làm React key; chuẩn hoá về chuỗi.
+                key={String(item.dataKey ?? item.name ?? index)}
                 className={cn(
                   "flex w-full flex-wrap items-stretch gap-2 [&>svg]:h-2.5 [&>svg]:w-2.5 [&>svg]:text-muted-foreground",
                   indicator === "dot" && "items-center"
@@ -258,13 +269,25 @@ ChartTooltipContent.displayName = "ChartTooltip"
 
 const ChartLegend = RechartsPrimitive.Legend
 
+// Recharts 3 `Omit` cả `payload` lẫn `verticalAlign` khỏi Legend Props vì
+// chúng đến từ context. Custom legend content vẫn nhận được chúng lúc render,
+// nên ta khai báo tường minh thay vì Pick từ LegendProps.
+type ChartLegendPayloadItem = {
+  value?: string
+  dataKey?: string | number
+  color?: string
+  payload?: Record<string, unknown>
+  [key: string]: unknown
+}
+
 const ChartLegendContent = React.forwardRef<
   HTMLDivElement,
-  React.ComponentProps<"div"> &
-    Pick<RechartsPrimitive.LegendProps, "payload" | "verticalAlign"> & {
-      hideIcon?: boolean
-      nameKey?: string
-    }
+  React.ComponentProps<"div"> & {
+    hideIcon?: boolean
+    nameKey?: string
+    payload?: ChartLegendPayloadItem[]
+    verticalAlign?: "top" | "bottom" | "middle"
+  }
 >(
   (
     { className, hideIcon = false, payload, verticalAlign = "bottom", nameKey },

@@ -9,6 +9,7 @@ import { useTranslation } from 'react-i18next';
 import { Post } from '@/types/post';
 import { SmartPrefetch } from '@/components/prefetch/SmartPrefetch';
 import { useFeedMediaCache, useFeedPerformance } from '@/hooks/useFeedMediaCache';
+import { useRequireAuth } from '@/hooks/useRequireAuth';
 
 export const Feed: React.FC = () => {
   const { isConnected, profile } = useGoogleAuth();
@@ -16,6 +17,7 @@ export const Feed: React.FC = () => {
   const { data: currentProfileData, isLoading: isCurrentProfileLoading } = useCurrentProfile();
   const currentUserProfile = currentProfileData?.data;
   const { t } = useTranslation('common');
+  const requireAuth = useRequireAuth();
 
   // ✅ Use cached feed query instead of manual state management
   const {
@@ -62,14 +64,16 @@ export const Feed: React.FC = () => {
 
   // ✅ Enhanced follow handler with optimistic updates
   const handleFollowUser = useCallback(async (userId: string, currentStatus: boolean) => {
-    if (!isConnected || isFollowLoading) return;
+    if (isFollowLoading) return;
+    // Khách bấm follow -> mở drawer đăng nhập
+    if (!requireAuth('follow')) return;
     
     try {
       await toggleFollow(userId, currentStatus);
     } catch (err) {
       console.error('Follow error:', err);
     }
-  }, [isConnected, isFollowLoading, toggleFollow]);
+  }, [requireAuth, isFollowLoading, toggleFollow]);
 
   const handlePostCreated = useCallback((newPost: Post) => {
     addNewPost(newPost);

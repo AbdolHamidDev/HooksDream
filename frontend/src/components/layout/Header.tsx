@@ -8,6 +8,7 @@ import { SettingsModal } from './setting/SettingsModal';
 import { useNavItems } from './NavItems';
 import { useNavigate } from 'react-router-dom';
 import { useSocial } from '../../hooks/useSocial';
+import { useAuthPrompt } from '@/contexts/AuthPromptContext';
 import { Badge } from '@/components/ui/badge';
 import { UserProfileSheet } from './UserProfileSheet';
 
@@ -23,6 +24,7 @@ export const Header: React.FC = () => {
   const navigate = useNavigate();
   const { profile, user, isConnected } = useAppStore();
   const typedUser = user as UserType;
+  const { openAuthPrompt } = useAuthPrompt();
   
   const { useCurrentProfile } = useSocial();
   
@@ -79,6 +81,24 @@ export const Header: React.FC = () => {
                 onError={(e) => { e.currentTarget.style.display = 'none'; }}
               />
               <span className="text-foreground font-bold text-xl">HooksDream</span>
+            </div>
+
+            {/* Khách: xem tìm kiếm + nút đăng nhập */}
+            <div className="flex items-center space-x-2">
+              <button
+                onClick={() => navigate('/search')}
+                className="p-2 hover:bg-accent rounded-lg transition-colors"
+                aria-label="Search"
+              >
+                <Search className="w-5 h-5" />
+              </button>
+
+              <button
+                onClick={() => openAuthPrompt('default')}
+                className="px-4 py-2 rounded-full bg-primary text-primary-foreground text-sm font-semibold hover:bg-primary/90 transition-colors"
+              >
+                {t('authPrompt.login')}
+              </button>
             </div>
           </div>
         </div>

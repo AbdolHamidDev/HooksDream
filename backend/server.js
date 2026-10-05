@@ -67,6 +67,7 @@ const DEFAULT_ORIGINS = [
   'http://localhost:5173',
   'https://hooksdream.vercel.app',
   'https://hooksdream.netlify.app',
+  'https://hooksdream-rjwo.onrender.com',
   'https://hooksdream.onrender.com'
 ];
 
