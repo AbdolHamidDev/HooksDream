@@ -11,19 +11,19 @@ export class PerformanceOptimizer {
   }
 
   // Safe console logging - only in development
-  public log(message: string, ...args: any[]): void {
+  public log(message: string, ...args: unknown[]): void {
     if (!this.isProduction) {
       console.log(message, ...args);
     }
   }
 
-  public warn(message: string, ...args: any[]): void {
+  public warn(message: string, ...args: unknown[]): void {
     if (!this.isProduction) {
       console.warn(message, ...args);
     }
   }
 
-  public error(message: string, ...args: any[]): void {
+  public error(message: string, ...args: unknown[]): void {
     // Always log errors, even in production
     console.error(message, ...args);
   }

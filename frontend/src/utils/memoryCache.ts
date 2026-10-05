@@ -6,7 +6,9 @@ interface CacheEntry<T> {
 }
 
 class MemoryCache {
-  private cache = new Map<string, CacheEntry<any>>();
+  // `unknown` thay vì `any`: dữ liệu trong cache có thể là bất kỳ thứ gì,
+  // nhưng bắt buộc phải ép kiểu khi đọc ra thay vì tự động coi là bất kỳ thứ gì.
+  private cache = new Map<string, CacheEntry<unknown>>();
   private maxSize = 100; // Max entries
   private cleanupInterval: NodeJS.Timeout;
 
@@ -48,7 +50,8 @@ class MemoryCache {
     this.cache.delete(key);
     this.cache.set(key, entry);
     
-    return entry.data;
+    // Cache lưu `unknown` nên phải ép về T khi trả ra cho người gọi.
+    return entry.data as T;
   }
 
   has(key: string): boolean {
