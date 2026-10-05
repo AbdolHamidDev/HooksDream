@@ -70,8 +70,9 @@ class CommentService {
     }
 
     // If it's a reply, verify parent comment exists
+    let parentComment = null;
     if (parentCommentId) {
-      const parentComment = await Comment.findById(parentCommentId);
+      parentComment = await Comment.findById(parentCommentId);
       if (!parentComment) {
         throw new Error('Parent comment not found');
       }
@@ -82,7 +83,9 @@ class CommentService {
       postId,
       content: content || '',
       image: image || '',
-      parentComment: parentCommentId || null
+      // Tên field trong schema là `parentCommentId`. Ghi `parentComment` sẽ bị
+      // Mongoose bỏ qua và reply sẽ mất liên kết với bình luận gốc.
+      parentCommentId: parentCommentId || null
     });
 
     await comment.save();
@@ -91,27 +94,32 @@ class CommentService {
     // Update post comment count
     await Post.findByIdAndUpdate(postId, { $inc: { commentCount: 1 } });
 
-    // Create notification for post owner (if not commenting on own post)
-    if (post.userId !== userId && !parentCommentId) {
-      await Notification.create({
-        userId: post.userId,
-        type: 'comment',
-        entityId: postId,
-        entityType: 'post',
-        actorId: userId,
-        message: 'commented on your post'
-      });
-    }
+    // Tạo notification cho chủ bài viết (nếu không phải tự bình luận bài của mình).
+    // Phải dùng Notification.createNotification() vì hàm này tự sinh `title`/`message`
+    // và tự bỏ qua hành động của chính mình. Gọi Notification.create() trực tiếp sẽ
+    // thiếu field bắt buộc (recipient/sender/title) và gây ValidationError.
+    await Notification.createNotification({
+      recipient: String(post.userId),
+      sender: String(userId),
+      type: 'comment',
+      entityType: 'post',
+      entityId: String(postId),
+      metadata: { postId: String(postId), commentId: String(comment._id) }
+    });
 
-    // Create notification for parent comment owner (if it's a reply)
-    if (parentCommentId && parentComment.userId !== userId) {
-      await Notification.create({
-        userId: parentComment.userId,
+    // Tạo notification cho chủ bình luận gốc (nếu đang reply).
+    if (parentCommentId && parentComment) {
+      await Notification.createNotification({
+        recipient: String(parentComment.userId),
+        sender: String(userId),
         type: 'reply',
-        entityId: postId,
         entityType: 'comment',
-        actorId: userId,
-        message: 'replied to your comment'
+        entityId: String(comment._id),
+        metadata: {
+          postId: String(postId),
+          commentId: String(comment._id),
+          parentCommentId: String(parentCommentId)
+        }
       });
     }
 

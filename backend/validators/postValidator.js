@@ -54,10 +54,13 @@ const validateRequest = (schema) => {
       next();
     } catch (error) {
       if (error instanceof z.ZodError) {
+        // Zod v4 dùng `issues`; `errors` đã bị loại bỏ (chỉ còn ở v3).
+        // Lấy `issues` trước rồi fallback về `errors` để tương thích cả hai major.
+        const issues = error.issues || error.errors || [];
         return res.status(400).json({
           success: false,
           message: 'Validation failed',
-          errors: error.errors.map(err => ({
+          errors: issues.map(err => ({
             field: err.path.join('.'),
             message: err.message
           }))
