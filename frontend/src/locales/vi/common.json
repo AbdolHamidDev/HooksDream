@@ -18,6 +18,7 @@
   "authPrompt": {
     "login": "Đăng nhập",
     "title": "Đăng nhập để tiếp tục",
+    "loginError": "Đăng nhập thất bại. Vui lòng thử lại hoặc thử trình duyệt khác.",
     "continueBrowsing": "Tiếp tục xem không cần đăng nhập",
     "reason": {
       "default": "Đăng nhập để tham gia thảo luận và kết nối với cộng đồng.",

@@ -20,6 +20,7 @@ export const AuthPromptDrawer: React.FC = () => {
   const { isOpen, reason, openAuthPrompt, closeAuthPrompt } = useAuthPrompt();
   const { isConnected, user } = useAppStore();
   const [agreeTerms, setAgreeTerms] = useState(false);
+  const [loginError, setLoginError] = useState<string | null>(null);
 
   // Đóng drawer sau khi đăng nhập thành công (không cần reload trang)
   useEffect(() => {
@@ -28,14 +29,25 @@ export const AuthPromptDrawer: React.FC = () => {
     }
   }, [isOpen, isConnected, user, closeAuthPrompt]);
 
-  // Mỗi lần mở lại -> reset lựa chọn đồng ý điều khoản
+  // Mỗi lần mở lại -> reset lựa chọn đồng ý điều khoản + xóa lỗi cũ
   const handleOpenChange = (open: boolean) => {
     if (open) {
       setAgreeTerms(false);
+      setLoginError(null);
       openAuthPrompt(reason);
       return;
     }
     closeAuthPrompt();
+  };
+
+  // KHÔNG được nuốt lỗi: backend trả 401 (vd GOOGLE_CLIENT_ID lệch) thì
+  // người dùng phải thấy thông báo, nếu không sẽ tưởng như không có gì xảy ra.
+  const handleLoginError = (error: any) => {
+    console.error('Auth prompt login failed:', error);
+    const message =
+      error?.message ||
+      t('authPrompt.loginError', 'Đăng nhập thất bại. Vui lòng thử lại.');
+    setLoginError(message);
   };
 
   const reasonKey = `authPrompt.reason.${reason}`;
@@ -91,12 +103,25 @@ export const AuthPromptDrawer: React.FC = () => {
           </div>
         </div>
 
+        {/* Lỗi đăng nhập - không được bỏ trống, nếu không người dùng tưởng không có gì xảy ra */}
+        {loginError && (
+          <div className="px-5 pt-4">
+            <div
+              role="alert"
+              className="p-3 rounded-lg border border-destructive/40 bg-destructive/10 text-destructive text-sm"
+            >
+              {loginError}
+            </div>
+          </div>
+        )}
+
         {/* Google Login */}
         <div className="px-5 pt-4">
           {agreeTerms ? (
             <SimpleGoogleLogin
               redirectTo={null}
               onSuccess={closeAuthPrompt}
+              onError={handleLoginError}
             />
           ) : (
             <div className="p-4 border border-dashed border-border rounded-lg text-center text-muted-foreground text-sm">

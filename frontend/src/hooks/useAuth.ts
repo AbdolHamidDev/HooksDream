@@ -247,7 +247,20 @@ export const useAuth = (): AuthContext => {
 
     } catch (error) {
       console.error('Token validation failed:', error);
-      
+
+      // RACE CONDITION: nhiều instance useAuth() cùng chạy validateAndLoadUser
+      // (PostCard, FeedPage, BottomNav... đều gọi useAuth). Nếu một instance
+      // validate token CŨ bị fail sau khi đăng nhập đã lưu token MỚI, block
+      // dưới đây sẽ xóa luôn session vừa tạo -> user thấy "đã login nhưng
+      // vẫn bị đăng xuất". Chỉ dọn khi token đang lưu vẫn đúng là token lỗi.
+      const currentToken = localStorage.getItem('auth_token');
+      if (currentToken && currentToken !== authToken) {
+        console.warn(
+          'Bỏ qua clear session: token đã được thay thế bởi token mới hơn (race condition)'
+        );
+        return;
+      }
+
       // Clear invalid token
       setToken(null);
       localStorage.removeItem('auth_token');

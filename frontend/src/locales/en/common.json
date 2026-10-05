@@ -395,6 +395,7 @@
   "authPrompt": {
     "login": "Sign in",
     "title": "Sign in to continue",
+    "loginError": "Sign in failed. Please try again or use a different browser.",
     "continueBrowsing": "Keep browsing without signing in",
     "reason": {
       "default": "Sign in to join the conversation and connect with the community.",
