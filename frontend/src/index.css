@@ -1,6 +1,5 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+/* Nội dung Tailwind (theme, preflight, utilities) đã được nạp trong globals.css.
+   File này chỉ giữ các style riêng của entrypoint. */
 
 /* Ensure no scroll on stories page */
 html, body {

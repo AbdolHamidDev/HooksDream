@@ -2,6 +2,7 @@ import { defineConfig } from 'vite';
 import react from '@vitejs/plugin-react';
 import { VitePWA } from 'vite-plugin-pwa';
 import { nodePolyfills } from 'vite-plugin-node-polyfills';
+import tailwindcss from '@tailwindcss/vite';
 import path from 'path';
 import { fileURLToPath } from 'url';
 
@@ -22,6 +23,9 @@ export default defineConfig(({ mode }) => {
   return {
   plugins: [
     react(),
+    // Tailwind CSS v4: dùng plugin chính thức cho Vite thay vì PostCSS.
+    // Autoprefixer đã được tích hợp sẵn (Lightning CSS) nên không cần postcss.config.js.
+    tailwindcss(),
     nodePolyfills({
       include: ['crypto', 'stream', 'util', 'buffer', 'process'],
       exclude: ['fs'],
