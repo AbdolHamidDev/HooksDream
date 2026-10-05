@@ -151,13 +151,16 @@ export const Comment: React.FC<CommentProps> = ({
     setLocalIsLiked(comment.isLiked || false);
   }, [comment.likeCount, comment.isLiked]);
 
+  // More flexible user comparison for Google Auth
+  // Hook phải nằm TRƯỚC mọi câu lệnh return sớm, nếu không số lượng hook
+  // sẽ thay đổi giữa các lần render (vi phạm Rules of Hooks).
+  const { profile: googleAuthProfile } = useGoogleAuth();
+
   // THÊM KIỂM TRA AN TOÀN - QUAN TRỌNG!
   if (!comment || !comment.userId) {
     return null; // Hoặc hiển thị fallback UI
   }
 
-  // More flexible user comparison for Google Auth
-  const { profile: googleAuthProfile } = useGoogleAuth();
   const fallbackUser = currentUser || googleAuthProfile;
   const isOwnComment = !!(fallbackUser && comment.userId && (
     comment.userId._id === (fallbackUser as any)._id ||

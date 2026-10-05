@@ -72,7 +72,7 @@ export class PerformanceOptimizer {
     if (this.isProduction) return;
 
     const scripts = document.querySelectorAll('script[src]');
-    let totalSize = 0;
+    const totalSize = 0;
 
     scripts.forEach(script => {
       const src = script.getAttribute('src');

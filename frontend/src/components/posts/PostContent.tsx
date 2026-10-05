@@ -22,11 +22,9 @@ export const PostContent: React.FC<PostContentProps> = memo(({
   const { hasUrls } = useUrlExtraction();
   const { previews, fetchMultiplePreviews } = useLinkPreview();
 
-  if (!content) return null;
-
   // Auto-fetch link previews when content changes
   useEffect(() => {
-    if (showLinkPreviews && hasUrls(content)) {
+    if (content && showLinkPreviews && hasUrls(content)) {
       fetchMultiplePreviews(content);
     }
   }, [content, showLinkPreviews, hasUrls, fetchMultiplePreviews]);
@@ -43,6 +41,10 @@ export const PostContent: React.FC<PostContentProps> = memo(({
       shouldShowToggle: shouldShowToggleButton
     };
   }, [isMobile, isExpanded, content.length]);
+
+  // Phải return sau tất cả hook: return sớm ở đây khiến số lượng hook
+  // thay đổi theo giá trị `content`, vi phạm Rules of Hooks.
+  if (!content) return null;
 
   return (
     <div className="px-3 sm:px-4 pb-2 sm:pb-3">

@@ -83,7 +83,7 @@ const MessagesPage: React.FC = () => {
     if (!chatSocket) return;
 
     // Advanced batching với requestIdleCallback
-    let batchedUpdates = new Set<string>();
+    const batchedUpdates = new Set<string>();
     let batchTimeout: NodeJS.Timeout;
     let isProcessing = false;
 

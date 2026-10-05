@@ -50,7 +50,7 @@ export const useStoryPhysics = (stories: Story[]) => {
     if (state.isDragging) return state; // Skip physics while dragging
 
     const dt = deltaTime * 0.001; // Convert to seconds
-    let { position, velocity } = state;
+    const { position, velocity } = state;
     
     // Random floating movement instead of just gravity
     const time = performance.now() * 0.001; // Current time in seconds

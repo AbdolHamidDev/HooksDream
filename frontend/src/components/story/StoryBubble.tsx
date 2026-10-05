@@ -140,7 +140,7 @@ export const StoryBubble: React.FC<StoryBubbleProps> = ({
     const baseStyle = STORY_BUBBLE_STYLES[story.visualEffects.bubbleStyle];
     const colorTheme = story.visualEffects.colorTheme;
     
-    let customStyle: React.CSSProperties = { ...baseStyle };
+    const customStyle: React.CSSProperties = { ...baseStyle };
     
     // Apply color theme
     if (story.visualEffects.bubbleStyle === 'gradient') {

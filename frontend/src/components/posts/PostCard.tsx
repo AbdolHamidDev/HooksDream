@@ -95,6 +95,13 @@ export const PostCard: React.FC<PostCardProps> = memo(({
   const [commentCount, setCommentCount] = useState(post.commentCount);
   const [isRefreshing, setIsRefreshing] = useState(false); // THÊM STATE
 
+  // Các callback này trước đây được gọi ngay trong JSX, tức là chỉ chạy khi
+  // nhánh render tương ứng được đánh dấu hiển thị. Điều đó làm số lượng hook
+  // thay đổi giữa các lần render -> vi phạm Rules of Hooks.
+  // Khai báo ở top-level để luôn chạy.
+  const toggleExpand = useCallback(() => setIsExpanded(!isExpanded), [isExpanded, setIsExpanded]);
+  const toggleComments = useCallback(() => setShowComments(!showComments), [showComments, setShowComments]);
+
 
   const handleShowLikes = useCallback(() => {
     if (post.likeCount > 0) {
@@ -220,7 +227,7 @@ useEffect(() => {
               <PostContent
                 content={post.content}
                 isExpanded={isExpanded}
-                onToggleExpand={useCallback(() => setIsExpanded(!isExpanded), [isExpanded])}
+                onToggleExpand={toggleExpand}
               />
             </div>
           )}
@@ -342,7 +349,7 @@ useEffect(() => {
           <PostContent
             content={post.content}
             isExpanded={isExpanded}
-            onToggleExpand={useCallback(() => setIsExpanded(!isExpanded), [isExpanded])}
+            onToggleExpand={toggleExpand}
           />
 
           {/* Media */}
@@ -407,7 +414,7 @@ useEffect(() => {
         <EngagementStats
           post={{ ...post, commentCount }} // CẬP NHẬT POST OBJECT
           showComments={showComments}
-          onToggleComments={useCallback(() => setShowComments(!showComments), [showComments])}
+          onToggleComments={toggleComments}
           currentUserId={currentUserHashId}
           commentCount={commentCount}
         />

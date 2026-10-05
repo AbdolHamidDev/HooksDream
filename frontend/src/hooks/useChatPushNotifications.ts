@@ -79,7 +79,7 @@ export const useChatPushNotifications = (currentUserId?: string) => {
       const senderName = senderInfo?.displayName || senderInfo?.username || 'Someone';
       
       let notificationBody = '';
-      let notificationIcon = senderInfo?.avatar || '/default-avatar.jpg';
+      const notificationIcon = senderInfo?.avatar || '/default-avatar.jpg';
 
       // Format notification based on message type
       switch (message.type) {
