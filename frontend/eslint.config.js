@@ -25,8 +25,10 @@ export default tseslint.config([
       // Nợ kỹ thuật có sẵn từ trước, chưa dọn được trong một lần nâng cấp.
       // Hạ xuống 'warn' để CI không đỏ, nhưng vẫn hiện ra output để dần xử lý.
       '@typescript-eslint/no-explicit-any': 'warn',
+      // Tắt rule gốc khi đã dùng bản của typescript-eslint, nếu không mỗi
+      // biến không dùng bị báo 2 lần (noise gấp đôi).
+      'no-unused-vars': 'off',
       '@typescript-eslint/no-unused-vars': 'warn',
-      'no-unused-vars': 'warn',
       'no-useless-catch': 'warn',
       'preserve-caught-error': 'warn',
 

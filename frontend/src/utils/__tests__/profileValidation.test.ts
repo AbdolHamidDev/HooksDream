@@ -1,4 +1,5 @@
 import { describe, it, expect } from 'vitest';
+import type { ProfileFormData } from '@/types/profile';
 import { validateProfile, validateFile } from '../profileValidation';
 
 describe('validateProfile', () => {
@@ -16,12 +17,20 @@ describe('validateProfile', () => {
   });
 
   it('bắt buộc có displayName', () => {
-    expect(validateProfile({ displayName: '  ', username: 'valid_user' }).displayName).toBeTruthy();
-    expect(validateProfile({ username: 'valid_user' }).displayName).toBeTruthy();
+    expect(
+      validateProfile({ displayName: '  ', username: 'valid_user' }).displayName
+    ).toBeTruthy();
+    // Hàm kiểm tra phòng thủ dù field này là bắt buộc trong ProfileFormData,
+    // nên vẫn phải xử lý được dữ liệu thiếu.
+    expect(
+      validateProfile({ username: 'valid_user' } as ProfileFormData).displayName
+    ).toBeTruthy();
   });
 
   it('bắt buộc có username', () => {
-    expect(validateProfile({ displayName: 'A' }).username).toBeTruthy();
+    expect(
+      validateProfile({ displayName: 'A' } as ProfileFormData).username
+    ).toBeTruthy();
   });
 
   it('từ chối username có ký tự lạ', () => {
