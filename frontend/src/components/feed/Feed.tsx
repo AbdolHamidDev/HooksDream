@@ -53,7 +53,7 @@ export const FeedContainer: React.FC<FeedContainerProps> = React.memo(({
   const { t } = useTranslation('common');
   const { profile } = useGoogleAuth();
   const { isFollowLoading } = useSocial();
-  const observerRef = useRef<IntersectionObserver>();
+  const observerRef = useRef<IntersectionObserver | null>(null);
 
   // Debounce infinite scroll để mobile không spam
   const debouncedLoadMore = useMemo(() => debounce(() => {

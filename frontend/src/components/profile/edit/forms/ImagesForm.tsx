@@ -42,7 +42,7 @@ export function ImagesForm({ formData, imageUploading, onImageUpload }: ImagesFo
     return () => window.removeEventListener('resize', checkMobile);
   }, []);
 
-  const triggerFileInput = (ref: React.RefObject<HTMLInputElement>) => {
+  const triggerFileInput = (ref: React.RefObject<HTMLInputElement | null>) => {
     ref.current?.click();
   };
 

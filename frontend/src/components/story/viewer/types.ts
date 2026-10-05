@@ -41,8 +41,8 @@ export interface StoryContentProps {
   onImageLoad: (imageElement: HTMLImageElement) => void;
   onPauseToggle: () => void;
   onRepliesToggle: () => void;
-  videoRef: React.RefObject<HTMLVideoElement>;
-  imageRef: React.RefObject<HTMLImageElement>;
+  videoRef: React.RefObject<HTMLVideoElement | null>;
+  imageRef: React.RefObject<HTMLImageElement | null>;
 }
 
 export interface StoryNavigationProps {

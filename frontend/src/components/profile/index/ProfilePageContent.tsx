@@ -29,7 +29,7 @@ export const ProfilePageContent: React.FC = () => {
   
   // ✅ Ref để track editing state và prevent Web3Auth overwrite
   const isEditingRef = useRef(false);
-  const refreshTimeoutRef = useRef<NodeJS.Timeout>();
+  const refreshTimeoutRef = useRef<NodeJS.Timeout | null>(null);
   
   const [activeTab, setActiveTab] = useState('posts');
   const [isEditingProfile, setIsEditingProfile] = useState(false);

@@ -22,7 +22,7 @@ export const useStoryProgress = ({
   onClose
 }: UseStoryProgressProps) => {
   const [progress, setProgress] = useState(0);
-  const animationFrameRef = useRef<number>();
+  const animationFrameRef = useRef<number | null>(null);
 
   // Dynamic story duration based on content type
   const getStoryDuration = useCallback(() => {

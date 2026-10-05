@@ -31,8 +31,8 @@ interface UseCreatePostReturn {
   handleVideoSelect: (event: React.ChangeEvent<HTMLInputElement>) => void;
   
   // Refs
-  imageInputRef: React.RefObject<HTMLInputElement>;
-  videoInputRef: React.RefObject<HTMLInputElement>;
+  imageInputRef: React.RefObject<HTMLInputElement | null>;
+  videoInputRef: React.RefObject<HTMLInputElement | null>;
 }
 
 export const useCreatePost = (): UseCreatePostReturn => {

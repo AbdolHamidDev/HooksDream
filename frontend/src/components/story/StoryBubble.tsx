@@ -35,7 +35,7 @@ export const StoryBubble: React.FC<StoryBubbleProps> = ({
   const [touchStartTime, setTouchStartTime] = useState(0);
   const [touchStartPos, setTouchStartPos] = useState({ x: 0, y: 0 });
   const bubbleRef = useRef<HTMLDivElement>(null);
-  const intervalRef = useRef<NodeJS.Timeout>();
+  const intervalRef = useRef<NodeJS.Timeout | null>(null);
 
   // Calculate bubble size based on story engagement and recency
   const calculateBubbleSize = () => {

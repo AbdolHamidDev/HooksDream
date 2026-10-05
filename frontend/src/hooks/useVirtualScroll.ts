@@ -47,7 +47,7 @@ export const useVirtualScroll = (
   const [itemHeights, setItemHeights] = useState<Map<number, number>>(new Map());
   
   const scrollElementRef = useRef<HTMLElement | null>(null);
-  const scrollTimeoutRef = useRef<NodeJS.Timeout>();
+  const scrollTimeoutRef = useRef<NodeJS.Timeout | null>(null);
   const measurementCache = useRef<Map<string, number>>(new Map());
 
   // Get scroll container

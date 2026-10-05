@@ -33,7 +33,7 @@ export const ParticleSystem: React.FC<ParticleSystemProps> = ({
   className = ''
 }) => {
   const [particles, setParticles] = useState<Particle[]>([]);
-  const animationFrameRef = useRef<number>();
+  const animationFrameRef = useRef<number | null>(null);
   const lastUpdateRef = useRef<number>(0);
   const particleIdRef = useRef<number>(0);
 

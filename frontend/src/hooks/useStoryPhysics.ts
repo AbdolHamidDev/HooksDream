@@ -4,7 +4,7 @@ import { Story, StoryPosition, StoryBubbleState, PHYSICS_CONFIG } from '@/types/
 
 export const useStoryPhysics = (stories: Story[]) => {
   const [bubbleStates, setBubbleStates] = useState<Map<string, StoryBubbleState>>(new Map());
-  const animationFrameRef = useRef<number>();
+  const animationFrameRef = useRef<number | null>(null);
   const lastUpdateRef = useRef<number>(0);
   const isRunningRef = useRef<boolean>(false);
 

@@ -14,7 +14,7 @@ interface UseStoryNavigationProps {
   onClose: () => void;
   onView: (storyId: string, duration: number) => void;
   onPauseToggle: () => void;
-  videoRef: React.RefObject<HTMLVideoElement>;
+  videoRef: React.RefObject<HTMLVideoElement | null>;
 }
 
 export const useStoryNavigation = ({

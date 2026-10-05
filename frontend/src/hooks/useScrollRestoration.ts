@@ -15,7 +15,7 @@ export const useScrollRestoration = (key?: string) => {
   const location = useLocation();
   const scrollKey = key || location.pathname;
   const isRestoringRef = useRef(false);
-  const saveTimeoutRef = useRef<NodeJS.Timeout>();
+  const saveTimeoutRef = useRef<NodeJS.Timeout | null>(null);
 
   // Save current scroll position
   const saveScrollPosition = useCallback(() => {

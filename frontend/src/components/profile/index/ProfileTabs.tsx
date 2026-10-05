@@ -21,7 +21,7 @@ interface ProfileTabsProps {
   onComment: (postId: string) => void;
   onShare: (postId: string) => void;
   hasMorePosts: boolean;
-  loadMoreRef: React.RefObject<HTMLDivElement>;
+  loadMoreRef: React.RefObject<HTMLDivElement | null>;
 }
 
 export const ProfileTabs: React.FC<ProfileTabsProps> = ({
