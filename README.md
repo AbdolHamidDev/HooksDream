@@ -3,7 +3,7 @@
 
   # HooksDream
 
-  **Production-grade social media platform** built with microservices architecture. Real-time communication, AI automation, and modern UX.
+  **Production-grade social media platform** built with a layered architecture. Real-time communication and modern UX.
 
   [Live Demo](https://hooksdream.vercel.app) • [Documentation](#) • [Report Bug](https://github.com/AbdolHamidDev/HooksDream/issues) • [Request Feature](https://github.com/AbdolHamidDev/HooksDream/issues)
 </div>
@@ -29,14 +29,13 @@
 
 ## Overview
 
-HooksDream is a full-stack social media platform demonstrating production-grade software engineering practices. Built with a microservices architecture separating concerns across Node.js (core API), React (frontend), and Python (AI/automation) services.
+HooksDream is a full-stack social media platform demonstrating production-grade software engineering practices. Built with a clean separation of concerns across a Node.js (core API) backend and a React frontend.
 
 **Key Characteristics:**
-- Microservices architecture with clear service boundaries
+- Layered architecture (routes → controllers → services → models)
 - Real-time bidirectional communication via WebSockets
 - JWT-based authentication with OTP verification
 - Media processing pipeline with Cloudinary + Sharp
-- AI-powered automation layer (Python/FastAPI)
 - PWA-enabled with offline support
 - Internationalization (i18n) ready
 - Comprehensive error handling and rate limiting
@@ -63,24 +62,20 @@ HooksDream is a full-stack social media platform demonstrating production-grade 
    │  (Rate Limit + Auth)   │
    └───────────┬────────────┘
                │
-       ┌───────┴───────┐
-       │               │
-  ┌────▼────┐    ┌────▼──────────┐
-  │ Node.js │    │  Python       │
-  │ Backend │◄──►│  Backend      │
-  │ Express │    │  FastAPI      │
-  │ + MongoDB│   │  (AI/Bot)     │
-  └─────────┘    └───────────────┘
-       │
-  ┌────▼────────┐
-  │ Cloudinary  │
-  │ (Media CDN) │
-  └─────────────┘
+   ┌──────────────────────────┐
+   │      Node.js Backend     │
+   │ Express + MongoDB        │
+   └────────────┬─────────────┘
+                │
+   ┌────────────▼─────────────┐
+   │        Cloudinary        │
+   │      (Media CDN)         │
+   └──────────────────────────┘
 ```
 
 **Design Principles:**
-- **Separation of Concerns**: Each service handles a specific domain
-- **Stateless Services**: Horizontal scaling ready
+- **Separation of Concerns**: Layered architecture, each layer has one responsibility
+- **Stateless API**: Horizontal scaling ready
 - **Event-Driven**: Real-time updates via Socket.IO
 - **Async Processing**: Background jobs for media and notifications
 
@@ -117,14 +112,6 @@ HooksDream is a full-stack social media platform demonstrating production-grade 
 | Express Rate Limit | API Protection | Latest |
 | Cheerio | Web Scraping | Latest |
 
-### Backend (Python)
-| Technology | Purpose | Version |
-|------------|---------|---------|
-| FastAPI | API Framework | Latest |
-| AsyncIO | Async Task Scheduling | Latest |
-| Unsplash API | Image Sourcing | - |
-| Bot Service | Social Media Automation | - |
-
 ### Infrastructure
 | Technology | Purpose |
 |------------|---------|
@@ -152,8 +139,7 @@ HooksDream/
 │   │   ├── notifications.js   # Notification system
 │   │   ├── search.js          # Search functionality
 │   │   ├── storyRoutes.js     # Stories (ephemeral content)
-│   │   ├── friendDiscovery.js # Friend recommendations
-│   │   └── botRoutes.js       # Bot integration
+│   │   └── friendDiscovery.js # Friend recommendations
 │   ├── controllers/           # Business logic layer
 │   ├── models/                # Mongoose schemas
 │   ├── middleware/            # Auth, validation, rate limiting
@@ -202,19 +188,6 @@ HooksDream/
 │   ├── tailwind.config.js
 │   └── tsconfig.json
 │
-├── pyBackend/                  # Python AI/Automation Service
-│   ├── main.py                # FastAPI application entry
-│   ├── config.py              # Configuration management
-│   ├── requirements.txt       # Python dependencies
-│   ├── Dockerfile             # Container config
-│   ├── docker-compose.yml     # Service orchestration
-│   ├── routers/
-│   │   └── bot_router.py      # Bot API endpoints
-│   ├── services/
-│   │   ├── unsplash_service.py # Unsplash API integration
-│   │   └── bot_service.py      # Marcin bot automation
-│   └── data/                  # Data storage
-│
 ├── docs/                      # Documentation
 │   ├── CONTRIBUTING.md
 │   ├── DEPLOYMENT.md
@@ -250,10 +223,8 @@ HooksDream/
 - **Rate Limiting** — API protection against abuse
 - **Real-time Updates** — Live feed updates via WebSockets
 
-### AI & Automation (Python Backend)
-- **Marcin Bot** — Automated social interactions (likes, follows, comments)
-- **Unsplash Integration** — Curated high-quality image sourcing
-- **Scheduled Tasks** — Automated posting and interactions
+### Operations
+- **Scheduled Tasks** — Automated story archiving via node-cron
 - **Keep-alive Service** — Prevents cold starts on Render
 
 ---
@@ -262,11 +233,9 @@ HooksDream/
 
 ### Prerequisites
 
-- **Node.js** >= 20.x
-- **Python** >= 3.9
+- **Node.js** >= 22
 - **MongoDB** (local or Atlas)
 - **Cloudinary** account
-- **Unsplash API** key (optional)
 
 ### Installation
 
@@ -327,28 +296,6 @@ cp .env.example .env
 
 # Start development server
 npm run dev
-```
-
-#### Python Backend
-```bash
-cd pyBackend
-python -m venv venv
-
-# Activate virtual environment
-# Windows:
-venv\Scripts\activate
-# macOS/Linux:
-source venv/bin/activate
-
-pip install -r requirements.txt
-
-# Configure environment
-cp .env.example .env
-
-# Start server
-python run.py
-# or
-uvicorn main:app --reload
 ```
 
 ---
@@ -412,13 +359,6 @@ uvicorn main:app --reload
 | GET | `/api/search/users` | Search users |
 | GET | `/api/search/posts` | Search posts |
 
-### Bot (Python Backend)
-| Method | Endpoint | Description |
-|--------|----------|-------------|
-| POST | `/api/bot/automate` | Run automation |
-| GET | `/api/bot/status` | Bot status |
-| POST | `/api/bot/schedule` | Schedule task |
-
 ---
 
 ## Socket.IO Events
@@ -456,12 +396,6 @@ npm run preview    # Preview production build
 npm run lint       # ESLint check
 ```
 
-**Python Backend:**
-```bash
-python run.py      # Production server
-uvicorn main:app --reload  # Development with auto-reload
-```
-
 ### Environment Variables
 
 #### Backend
@@ -479,21 +413,12 @@ uvicorn main:app --reload  # Development with auto-reload
 | `VITE_API_URL` | Backend API URL | Yes |
 | `VITE_SOCKET_URL` | Socket.IO server URL | Yes |
 
-#### Python Backend
-| Variable | Description | Required |
-|----------|-------------|----------|
-| `NODE_BACKEND_URL` | Node.js backend URL | Yes |
-| `UNSPLASH_ACCESS_KEY` | Unsplash API key | No |
-| `BOT_ENABLED` | Enable/disable bot | No |
-| `ENVIRONMENT` | Environment | No |
-
 ---
 
 ## Deployment
 
-### Render (Backend Services)
+### Render (Backend)
 - **Node.js Backend**: Deploy from `backend/` directory
-- **Python Backend**: Deploy from `pyBackend/` directory
 - Use provided `Dockerfile` or Render Nixpacks
 
 ### Vercel (Frontend)
@@ -533,7 +458,7 @@ See [CONTRIBUTING.md](docs/CONTRIBUTING.md) for detailed guidelines.
 - [x] Core social media features (posts, comments, likes)
 - [x] Real-time chat and notifications
 - [x] Stories functionality with auto-archive
-- [x] Python backend for AI automation
+- [x] Layered backend architecture (routes → controllers → services → models)
 - [x] PWA support
 - [x] Docker containerization
 - [ ] Dark mode

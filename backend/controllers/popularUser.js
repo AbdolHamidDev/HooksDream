@@ -62,8 +62,8 @@ async function getPopularUsers(req, res) {
     thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
     
     const newUsers = await User.find({
-      _id: { $ne: currentUserId },
-      _id: { $nin: followingIds }, // Chưa follow
+      // _id gộp chung: viết hai key `_id` riêng lẻ sẽ khiến $ne bị ghi đè mất.
+      _id: { $ne: currentUserId, $nin: followingIds }, // Chưa follow
       hashId: { $ne: CREATOR_HASH_ID }, // Không phải creator
       createdAt: { $gte: thirtyDaysAgo }
     })
@@ -74,8 +74,7 @@ async function getPopularUsers(req, res) {
 
     // 4. Tìm user popular (không follow nhau, không phải chính mình, không phải creator)
     const popularUsers = await User.find({
-      _id: { $ne: currentUserId },
-      _id: { $nin: followingIds }, // Chưa follow
+      _id: { $ne: currentUserId, $nin: followingIds }, // Chưa follow
       hashId: { $ne: CREATOR_HASH_ID }, // Không phải creator
       followerCount: { $gte: 10 } // Có ít nhất 10 followers
     })

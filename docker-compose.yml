@@ -1,5 +1,3 @@
-version: '3.8'
-
 services:
   # MongoDB Database
   mongodb:
@@ -22,11 +20,12 @@ services:
       timeout: 5s
       retries: 5
 
-  # Node.js Backend
+  # Node.js Backend (development — dùng hot-reload)
   backend:
     build:
       context: ./backend
       dockerfile: Dockerfile
+      target: development
     container_name: hooksdream-backend
     restart: unless-stopped
     ports:
@@ -52,11 +51,12 @@ services:
       - hooksdream-network
     command: npm run dev
 
-  # Frontend
+  # Frontend (development — dùng hot-reload)
   frontend:
     build:
       context: ./frontend
       dockerfile: Dockerfile
+      target: development
     container_name: hooksdream-frontend
     restart: unless-stopped
     ports:

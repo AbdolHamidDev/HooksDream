@@ -165,7 +165,8 @@ const getNearbyUsers = async (req, res) => {
     // TODO: Implement proper geospatial indexing with GeoJSON Point
     const nearbyUsers = await User.find({
       _id: { $ne: currentUserId },
-      location: { $exists: true, $ne: '', $ne: null }
+      // $ne: '' và $ne: null trùng key sẽ bị ghi đè -> dùng $nin cho chắc chắn.
+      location: { $exists: true, $nin: ['', null] }
     })
     .select('username displayName avatar isVerified followersCount followingCount postsCount bio location joinedAt')
     .limit(parseInt(limit))

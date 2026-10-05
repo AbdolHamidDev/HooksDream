@@ -2,6 +2,7 @@ const UserService = require('../services/userService');
 const { createResponse, validateUsername, generateUniqueUsername } = require('../utils/helpers');
 const { uploadImageToCloudinary, deleteImageFromCloudinary } = require('../utils/cloudinary');
 const { optimizeImage } = require('../utils/imageProcessing');
+const User = require('../models/User');
 
 // Lấy thông tin current user profile (từ JWT token)
 exports.getCurrentUserProfile = async (req, res) => {

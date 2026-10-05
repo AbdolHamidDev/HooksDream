@@ -1,6 +1,10 @@
 const PostService = require('../services/postService');
 const { createResponse } = require('../utils/helpers');
 const linkPreviewService = require('../services/linkPreviewService');
+const Post = require('../models/Post');
+const User = require('../models/User');
+const Comment = require('../models/Comment');
+const Notification = require('../models/Notification');
 const { validateRequest, createPostSchema, updatePostSchema, getPostsQuerySchema, getUserPostsQuerySchema, searchPostsQuerySchema } = require('../validators/postValidator');
 
 // Get socket server instance for notifications

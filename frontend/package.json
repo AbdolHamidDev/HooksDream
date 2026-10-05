@@ -12,7 +12,7 @@
     "preview": "vite preview"
   },
   "engines": {
-    "node": "20.x"
+    "node": ">=22"
   },
   "dependencies": {
     "@floating-ui/react": "^0.27.15",

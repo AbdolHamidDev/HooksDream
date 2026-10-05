@@ -1,5 +1,20 @@
 const cloudinary = require('cloudinary').v2;
-const { CloudinaryStorage } = require('multer-storage-cloudinary');
+// multer-storage-cloudinary changed its CommonJS export shape across majors:
+//   v2.x -> module.exports = CloudinaryStorage   (direct class export)
+//   v4.x -> exports.CloudinaryStorage = ...       (named export, plus a .default factory)
+// Resolve both so the app boots regardless of the installed version.
+const cloudinaryStorageModule = require('multer-storage-cloudinary');
+const CloudinaryStorage =
+  cloudinaryStorageModule.CloudinaryStorage ||
+  cloudinaryStorageModule.default ||
+  cloudinaryStorageModule;
+
+if (typeof CloudinaryStorage !== 'function') {
+  throw new Error(
+    'multer-storage-cloudinary: could not resolve the CloudinaryStorage constructor. ' +
+    `Resolved export shape: ${JSON.stringify(Object.keys(cloudinaryStorageModule))}`
+  );
+}
 const multer = require('multer');
 const stream = require('stream');
 

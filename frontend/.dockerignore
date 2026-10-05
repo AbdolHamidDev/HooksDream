@@ -1,0 +1,29 @@
+# Dependencies
+node_modules
+npm-debug.log*
+
+# Environment
+.env
+.env.*
+!.env.example
+
+# Build output
+dist
+dev-dist
+
+# Tests & coverage
+coverage
+*.test.*
+*.spec.*
+
+# Docker
+# Lưu ý: KHÔNG ignore nginx.conf vì Dockerfile cần COPY nó ở production stage.
+Dockerfile
+.dockerignore
+
+# Docs
+*.md
+
+# OS junk
+.DS_Store
+Thumbs.db

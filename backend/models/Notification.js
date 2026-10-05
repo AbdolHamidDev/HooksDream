@@ -64,10 +64,11 @@ const NotificationSchema = new mongoose.Schema({
         default: false
     },
     // Timestamps
+    // Không đặt `index: true` ở đây: TTL index bên dưới đã tạo index trên createdAt.
+    // Khai báo cả hai sẽ khiến Mongoose cảnh báo duplicate schema index.
     createdAt: {
         type: Date,
-        default: Date.now,
-        index: true
+        default: Date.now
     },
     readAt: {
         type: Date

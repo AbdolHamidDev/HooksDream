@@ -300,7 +300,7 @@ StorySchema.index({ userId: 1, createdAt: -1 });
 StorySchema.index({ 'settings.visibility': 1 });
 StorySchema.index({ isDeleted: 1 });
 StorySchema.index({ isHighlighted: 1 });
-StorySchema.index({ isArchived: 1 });
+// isArchived đã có `index: true` ở trên nên không khai báo lặp ở đây.
 
 // Virtual for story URL
 StorySchema.virtual('storyUrl').get(function() {
