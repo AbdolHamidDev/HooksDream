@@ -1,11 +1,18 @@
 // validators/postValidator.js - Zod validation schemas
 const { z } = require('zod');
 
+// Chuẩn hoá chuỗi rỗng thành undefined TRƯỚC khi validate.
+// Lý do (BUG-B1, 10/2026): frontend useCreatePost luôn gửi `video: ''`
+// khi không có video; z.string().url() reject '' khiến POST /api/posts
+// trả 400 cho MỌI bài viết. Chuỗi rỗng nghĩa là "không có giá trị".
+const emptyToUndefined = (schema) =>
+  z.preprocess((value) => (value === '' ? undefined : value), schema.optional());
+
 // Create Post Schema
 const createPostSchema = z.object({
   content: z.string().max(5000).optional(),
   images: z.array(z.string().url()).max(10).optional(),
-  video: z.string().url().optional(),
+  video: emptyToUndefined(z.string().url()),
   visibility: z.enum(['public', 'private']).default('public')
 });
 
@@ -13,7 +20,7 @@ const createPostSchema = z.object({
 const updatePostSchema = z.object({
   content: z.string().max(5000).optional(),
   images: z.array(z.string().url()).max(10).optional(),
-  video: z.string().url().optional(),
+  video: emptyToUndefined(z.string().url()),
   visibility: z.enum(['public', 'private']).optional()
 });
 

@@ -7,6 +7,7 @@ process.env.NODE_ENV = 'test';
 
 // Biến môi trường tối thiểu để các module nạp ở top-level không lỗi.
 process.env.JWT_SECRET = process.env.JWT_SECRET || 'test_jwt_secret';
+process.env.GOOGLE_CLIENT_ID = process.env.GOOGLE_CLIENT_ID || 'test-google-client-id';
 process.env.MONGODB_URI = process.env.MONGODB_URI || 'mongodb://127.0.0.1:27017/hooksdream_test';
 
 // Tắt testConnection() chạy ngầm khi require utils/cloudinary.

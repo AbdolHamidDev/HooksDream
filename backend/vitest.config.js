@@ -12,7 +12,8 @@ module.exports = defineConfig({
     coverage: {
       provider: 'v8',
       reporter: ['text', 'html'],
-      include: ['utils/**/*.js', 'services/**/*.js', 'validators/**/*.js'],
+      // Mở rộng sang controllers/models post (10/2026) vì test mới bao phủ chúng.
+      include: ['utils/**/*.js', 'services/**/*.js', 'validators/**/*.js', 'controllers/postController.js', 'controllers/likeController.js', 'models/Post.js'],
       thresholds: {
         lines: 60,
         functions: 60,

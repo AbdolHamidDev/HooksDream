@@ -197,13 +197,19 @@ export const useCreatePost = (): UseCreatePostReturn => {
         videoUrl = videoResult.data.url;
       }
 
-      // Create post with uploaded URLs
-      const postData = {
+      // Create post with uploaded URLs.
+      // Chỉ gửi video/images khi có giá trị thật — backend Zod url()
+      // reject chuỗi rỗng (BUG-B1: post text-only/ảnh từng trả 400).
+      const postData: { content: string; images?: string[]; video?: string; visibility: string } = {
         content: content.trim(),
-        images: imageUrls,
-        video: videoUrl,
         visibility: 'public'
       };
+      if (imageUrls.length > 0) {
+        postData.images = imageUrls;
+      }
+      if (videoUrl) {
+        postData.video = videoUrl;
+      }
 
       const response = await fetch(`${API_BASE_URL}/api/posts`, {
         method: 'POST',

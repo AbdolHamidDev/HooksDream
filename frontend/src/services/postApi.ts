@@ -71,9 +71,10 @@ export const postApi = {
     });
   },
 
-  // Unlike post
+  // Unlike post — dùng chung endpoint toggle /like của backend
+  // (backend routes/posts.js chỉ có POST /:id/like, KHÔNG có /:id/unlike).
   unlikePost: async (postId: string) => {
-    return apiCall(`/api/posts/${postId}/unlike`, {
+    return apiCall(`/api/posts/${postId}/like`, {
       method: 'POST',
     });
   },

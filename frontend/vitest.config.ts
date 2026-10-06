@@ -24,7 +24,17 @@ export default defineConfig({
     coverage: {
       provider: 'v8',
       reporter: ['text', 'html'],
-      include: ['src/utils/**', 'src/hooks/**', 'src/services/**'],
+      // Mở rộng sang component post/feed (10/2026): test mới bao phủ
+      // createpost, posts, feed — giữ ngưỡng cũ để không vỡ CI.
+      include: [
+        'src/utils/**',
+        'src/hooks/**',
+        'src/services/**',
+        'src/components/createpost/**',
+        'src/components/posts/**',
+        'src/components/feed/PostItem.tsx',
+        'src/components/feed/EmptyState.tsx',
+      ],
       thresholds: {
         lines: 40,
         functions: 40,

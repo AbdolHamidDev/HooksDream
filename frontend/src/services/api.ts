@@ -561,7 +561,8 @@ export const api = {
     },
 
     unlikePost: async (postId: string) => {
-      return apiCall(`/api/posts/${postId}/unlike`, {
+      // Backend chỉ có POST /:id/like dạng toggle — không có /:id/unlike.
+      return apiCall(`/api/posts/${postId}/like`, {
         method: 'POST',
       });
     },
