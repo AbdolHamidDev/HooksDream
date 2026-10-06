@@ -28,8 +28,11 @@ exports.googleLogin = async (req, res) => {
         try {
             googleUserInfo = await googleAuthService.verifyGoogleToken(idToken);
         } catch (error) {
+            // KHÔNG được ghi đè lý do thật (vd lệch GOOGLE_CLIENT_ID),
+            // nếu không client chỉ thấy "Invalid Google token" chung chung.
+            console.error('❌ Google login verify failed:', error.message);
             return res.status(401).json(
-                createResponse(false, 'Invalid Google token', null, null, 401)
+                createResponse(false, error.message || 'Invalid Google token', null, null, 401)
             );
         }
         

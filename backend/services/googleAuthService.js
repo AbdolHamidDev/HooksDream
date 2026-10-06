@@ -24,15 +24,56 @@ class GoogleAuthService {
     }
 
     /**
+     * Decode payload WITHOUT verifying — chỉ để chẩn đoán nguyên nhân thật.
+     * verifyIdToken() ném lỗi chung chung nên không biết sai ở đâu.
+     */
+    decodePayloadUnsafe(idToken) {
+        try {
+            const parts = String(idToken).split('.');
+            if (parts.length !== 3) return null;
+            const b64 = parts[1].replace(/-/g, '+').replace(/_/g, '/');
+            return JSON.parse(Buffer.from(b64, 'base64').toString('utf8'));
+        } catch (error) {
+            return null;
+        }
+    }
+
+    /**
      * Verify Google ID token and extract user info
      * @param {string} idToken - Google ID token from frontend
      * @returns {Object} User information from Google
      */
     async verifyGoogleToken(idToken) {
+        const expectedAudience = process.env.GOOGLE_CLIENT_ID;
+        const decoded = this.decodePayloadUnsafe(idToken);
+
+        // 1) Lệch audience — nguyên nhân phổ biến nhất khi Vercel/Render đặt
+        //    GOOGLE_CLIENT_ID khác nhau. Báo đúng sai số để không phải đoán.
+        if (decoded && expectedAudience) {
+            const tokenAud = Array.isArray(decoded.aud) ? decoded.aud[0] : decoded.aud;
+            if (tokenAud && tokenAud !== expectedAudience) {
+                console.error(
+                    `❌ GOOGLE_CLIENT_ID LECH AUDIENCE.\n` +
+                    `   Token frontend : ${tokenAud}\n` +
+                    `   SERVER (Render) : ${expectedAudience}\n` +
+                    `   -> Đặt Render GOOGLE_CLIENT_ID = "${tokenAud}"`
+                );
+                throw new Error(
+                    `GOOGLE_CLIENT_ID không khớp: token được tạo bởi "${tokenAud}" nhưng server đang dùng "${expectedAudience}". ` +
+                    `Hãy đặt GOOGLE_CLIENT_ID của Render = "${tokenAud}".`
+                );
+            }
+
+            // 2) Token hết hạn
+            if (decoded.exp && Number(decoded.exp) * 1000 < Date.now()) {
+                throw new Error('Google ID token đã hết hạn. Vui lòng thử đăng nhập lại.');
+            }
+        }
+
         try {
             const ticket = await this.client.verifyIdToken({
                 idToken: idToken,
-                audience: process.env.GOOGLE_CLIENT_ID,
+                audience: expectedAudience,
             });
 
             const payload = ticket.getPayload();
@@ -47,7 +88,12 @@ class GoogleAuthService {
                 familyName: payload.family_name
             };
         } catch (error) {
-            throw new Error('Invalid Google token');
+            console.error('❌ verifyIdToken failed:', error.message, '| decoded aud:', decoded?.aud);
+            // Không nuốt lý do thật, nếu không client chỉ thấy "Invalid Google token"
+            throw new Error(
+                `Không xác thực được Google token: ${error.message}. ` +
+                `Kiểm tra GOOGLE_CLIENT_ID trên server và Authorized JavaScript origins ở Google Cloud Console.`
+            );
         }
     }
 
