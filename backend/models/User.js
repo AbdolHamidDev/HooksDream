@@ -12,6 +12,19 @@ const UserSchema = new mongoose.Schema({
         unique: true,
         required: true
     },
+    // hashId = googleId. Schema TRƯỚC ĐÂY KHÔNG khai báo trường này nên
+    // mongoose (strict mode) đã bỏ nó khi lưu -> User.findOne({ hashId })
+    // không bao giờ khớp và GET /api/users/profile/:hashId trả 500.
+    hashId: {
+        type: String,
+        default: function () { return this._id; }
+    },
+    // isDeleted cũng từng thiếu -> điều kiện isDeleted: false không khớp
+    // doc cũ (field không tồn tại). Query dùng isDeleted: { $ne: true }.
+    isDeleted: {
+        type: Boolean,
+        default: false
+    },
    email: {
     type: String,
     required: false,  // Đổi thành không bắt buộc

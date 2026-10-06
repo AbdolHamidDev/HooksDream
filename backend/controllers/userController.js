@@ -32,8 +32,17 @@ exports.getProfile = async (req, res) => {
         
     } catch (error) {
         console.error('❌ getProfile error:', error);
-        res.status(500).json(
-            createResponse(false, 'Internal server error', null, null, 500)
+        // Không phải lỗi nội bộ nếu chỉ là không tìm thấy user -> trả 404,
+        // nếu không client (đặc biệt khách xem profile) sẽ thấy 500 mơ hồ.
+        const statusCode = error.statusCode === 404 ? 404 : 500;
+        res.status(statusCode).json(
+            createResponse(
+                false,
+                statusCode === 404 ? 'User not found' : 'Internal server error',
+                null,
+                null,
+                statusCode
+            )
         );
     }
 };

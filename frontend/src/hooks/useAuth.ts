@@ -65,6 +65,13 @@ export interface AuthContext {
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:5000';
 const GOOGLE_CLIENT_ID = import.meta.env.VITE_GOOGLE_CLIENT_ID;
 
+// Cờ phạm vi module: GIS chỉ được initialize 1 lần / 1 lần tải trang.
+// Trước đây MỖI instance useAuth() (PostCard, FeedPage, BottomNav...) đều gọi
+// initialize() lại -> console spam "called multiple times" và nguy hiểm hơn là
+// instance KHÔNG có callback gọi sau cùng sẽ nuốt mất callback của login.
+let gisInitialized = false;
+const GSI_CLIENT_ID = import.meta.env.VITE_GOOGLE_CLIENT_ID;
+
 export const useAuth = (): AuthContext => {
   // Core state
   const [isLoading, setIsLoading] = useState(false);
@@ -182,16 +189,25 @@ export const useAuth = (): AuthContext => {
       // Load Google script
       await loadGoogleScript();
       
-      // Initialize Google Identity Services
       if (!window.google?.accounts?.id) {
         throw new Error('Google Identity Services not available');
       }
 
-      window.google.accounts.id.initialize({
-        client_id: GOOGLE_CLIENT_ID,
-        auto_select: false,
-        cancel_on_tap_outside: true,
-      });
+      // Initialize Google Identity Services — CHỈ MỘT LẦN / một lần tải trang,
+      // và LUÔN kèm callback để không bao giờ nuốt mất callback của login.
+      if (!gisInitialized) {
+        gisInitialized = true;
+        window.google.accounts.id.initialize({
+          client_id: GOOGLE_CLIENT_ID || GSI_CLIENT_ID,
+          auto_select: false,
+          cancel_on_tap_outside: true,
+          callback: (response: any) => {
+            // Lưu ý: setState của instance đầu tiên có thể đã unmount,
+            // React bỏ qua. Việc ghi store vẫn chạy (zustand là global).
+            handleCredentialResponse(response);
+          },
+        });
+      }
 
       // Check for existing session
       const savedToken = localStorage.getItem('auth_token');

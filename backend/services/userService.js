@@ -10,10 +10,17 @@ class UserService {
    * Get user profile by hashId
    */
   static async getProfile(hashId, requesterId = null) {
-    const user = await User.findOne({ hashId, isDeleted: false });
+    // hashId thường là googleId (== _id). KHÔNG dùng isDeleted: false thuần
+    // vì doc cũ không có trường này thì Mongo sẽ KHÔNG khớp được.
+    const user = await User.findOne({
+      $or: [{ hashId }, { _id: hashId }],
+      isDeleted: { $ne: true }
+    });
     
     if (!user) {
-      throw new Error('User not found');
+      const notFound = new Error('User not found');
+      notFound.statusCode = 404;
+      throw notFound;
     }
 
     // Get follower/following counts
